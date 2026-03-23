@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lease Contract — Apartment</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{poppins:['Poppins','sans-serif']},borderRadius:{'4xl':'2rem','5xl':'3rem'}}}}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css"/>
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+    .nav-blur { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+    #mobileMenu { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+    #mobileMenu.open { max-height: 600px; }
+    img { transition: none !important; }
+    *, *::before, *::after { transition: background-color 0.25s, border-color 0.25s, color 0.2s, box-shadow 0.2s, opacity 0.2s, transform 0.2s; }
+    #toast { transition: opacity 0.3s; }
+
+    /* ── Document viewer tray ── */
+    .doc-tray { background: #c8ccd0; padding: 16px 12px 32px; }
+    .dark .doc-tray { background: #111; }
+
+    /* ── A4 page shell ── */
+    .doc-page {
+      background: #fff;
+      width: 210mm;
+      height: 297mm;
+      margin: 0 auto 16px;
+      border: 1px solid #bbb;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15), 0 6px 24px rgba(0,0,0,0.08);
+      box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .dark .doc-page { background: #1e1e1e; border-color: #333; color: #e0e0e0; }
+    .doc-page:last-child { margin-bottom: 0; }
+
+    /* Content area inside each page (header + body + footer) */
+    .page-header {
+      flex-shrink: 0;
+      padding: 14mm 18mm 0;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    .page-body {
+      flex: 1;
+      padding: 0 18mm 6mm;
+      overflow: hidden;
+      font-family: 'Times New Roman', Times, serif;
+      color: #1a1a1a;
+    }
+    .dark .page-body { color: #e0e0e0; }
+    .page-footer-bar {
+      flex-shrink: 0;
+      height: 14mm;
+      padding: 0 18mm;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 0.5px solid #d4d4d4;
+      font-size: 8pt;
+      color: #a3a3a3;
+      font-family: 'Poppins', sans-serif;
+    }
+    .dark .page-footer-bar { border-color: #2a2a2a; color: #525252; }
+
+    /* ── Content styles (Times New Roman, legal doc) ── */
+    .doc-body-content { font-size: 11pt; line-height: 1.8; text-align: justify; color: #1a1a1a; }
+    .dark .doc-body-content { color: #e0e0e0; }
+    .doc-body-content p { margin: 0 0 10px 0; }
+    .doc-body-content .indent { text-indent: 2em; }
+    .doc-body-content strong { font-weight: 700; }
+
+    /* Letterhead (first page only) */
+    .lh-logo  { font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 700; letter-spacing: -0.02em; color: #111; }
+    .dark .lh-logo { color: #fff; }
+    .lh-sub   { font-family: 'Poppins', sans-serif; font-size: 9px; color: #737373; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 1px; }
+    .lh-addr  { font-size: 10px; color: #737373; margin-top: 3px; line-height: 1.55; }
+    .lh-line  { border: none; border-top: 2px solid #1a1a1a; margin: 10px 0 3px; }
+    .dark .lh-line { border-color: #e8e8e8; }
+    .lh-thin  { border: none; border-top: 0.5px solid #d4d4d4; margin: 0 0 14px; }
+    .dark .lh-thin { border-color: #333; }
+
+    /* Continuation header (pages 2+) */
+    .cont-header { display: flex; justify-content: space-between; align-items: center; }
+    .cont-logo   { font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 700; color: #111; }
+    .dark .cont-logo { color: #fff; }
+    .cont-ref    { font-size: 10px; color: #737373; font-family: 'Poppins', sans-serif; }
+
+    /* Document title */
+    .doc-title    { font-size: 14px; font-weight: 700; text-align: center; text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 2px; }
+    .doc-subtitle { font-size: 11px; text-align: center; color: #525252; margin-bottom: 16px; }
+    .dark .doc-subtitle { color: #a3a3a3; }
+
+    /* WITNESSETH */
+    .witnesseth { text-align: center; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; margin: 12px 0 10px; }
+
+    /* Article title */
+    .article-title {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; text-align: center;
+      margin: 18px 0 8px; border-top: 0.5px solid #d4d4d4; padding-top: 14px;
+    }
+    .article-title.no-border { border-top: none; padding-top: 0; }
+    .dark .article-title { border-color: #333; }
+
+    /* Signature */
+    .sig-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 16px; }
+    .sig-line  { border-bottom: 1px solid #1a1a1a; margin-bottom: 5px; height: 1px; }
+    .dark .sig-line { border-color: #e8e8e8; }
+    .sig-name  { font-size: 11px; font-weight: 700; }
+    .sig-role  { font-size: 10px; color: #737373; margin-top: 2px; }
+    .sig-date  { font-size: 10px; color: #525252; margin-top: 8px; }
+    .dark .sig-date { color: #a3a3a3; }
+    .sig-space { height: 24px; }
+
+    /* Notary */
+    .notary-block { margin-top: 16px; padding: 10px 14px; border: 0.5px solid #d4d4d4; font-family: 'Times New Roman', Times, serif; }
+    .dark .notary-block { border-color: #404040; }
+    .notary-title { font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; text-align: center; margin-bottom: 6px; }
+    .notary-body  { font-size: 9.5px; line-height: 1.6; color: #525252; }
+    .dark .notary-body { color: #a3a3a3; }
+    .notary-fill  { display: inline-block; border-bottom: 1px solid #525252; min-width: 60px; }
+    .notary-table { font-size: 9.5px; width: 100%; border-collapse: collapse; margin: 6px 0; }
+    .notary-table td { padding: 3px 6px; border-bottom: 0.5px solid #d4d4d4; }
+    .dark .notary-table td { border-color: #333; }
+
+    /* ACTIVE stamp */
+    .stamp {
+      position: absolute; top: 14mm; right: 18mm;
+      border: 3px solid rgba(22,163,74,0.55); border-radius: 3px;
+      padding: 4px 10px; transform: rotate(-8deg); opacity: 0.5;
+      font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 700;
+      color: #16a34a; letter-spacing: 0.12em; pointer-events: none;
+    }
+
+    /* ── Hidden source ── */
+    #contractSource { display: none !important; }
+
+    @media (max-width: 680px) {
+      .doc-page { width: 100%; height: auto; }
+      .page-body { overflow: visible; }
+      .sig-grid { grid-template-columns: 1fr; gap: 24px; }
+      .stamp { display: none; }
+    }
+
+    @media print {
+      @page { size: A4; margin: 0; }
+      nav, .no-print { display: none !important; }
+      html, body { margin: 0; padding: 0; background: white !important; }
+      .doc-tray { background: white !important; padding: 0; }
+      .doc-page {
+        border: none; box-shadow: none; margin: 0;
+        page-break-after: always; break-after: page;
+      }
+      .doc-page:last-child { page-break-after: auto; break-after: auto; }
+    }
+  </style>
+</head>
+<body class="bg-neutral-100 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100 font-poppins">
+
+  <!-- NAVBAR -->
+  <nav class="nav-blur fixed top-0 left-0 right-0 z-50 bg-neutral-100/85 dark:bg-neutral-950/85 border-b border-neutral-200 dark:border-neutral-800">
+    <div class="h-14 md:h-16 flex items-center justify-between px-4 md:px-10">
+      <a href="index.html" class="w-11 h-11"><img src="ams-logo.png" alt="Logo" class="w-full h-full object-contain"/></a>
+      <ul class="hidden md:flex items-center gap-1 list-none m-0 p-0">
+        <li><a href="index.html" class="px-4 py-2 text-sm font-medium rounded-lg text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-800 block">Home</a></li>
+        <li class="relative" data-dropdown>
+          <button class="dropdown-trigger flex items-center gap-1 px-4 py-2 text-sm font-semibold text-neutral-900 dark:text-white bg-neutral-200 dark:bg-neutral-800 rounded-lg cursor-pointer border-none bg-transparent font-poppins">My Rooms <i class="uil uil-angle-down text-base dropdown-chevron" style="transition:transform 0.2s;"></i></button>
+          <div class="dropdown-menu absolute top-full left-0 mt-2 w-44 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-xl shadow-xl p-1.5 z-50 opacity-0 invisible pointer-events-none" style="transition:opacity 0.18s ease,transform 0.18s ease;transform:translateY(6px);">
+            <a href="all-rooms.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-apps"></i> All Rooms</a>
+            <a href="booked.html"    class="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 rounded-lg"><i class="uil uil-calendar-alt"></i> Booked</a>
+            <a href="favorites.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-heart"></i> Favorites</a>
+          </div>
+        </li>
+        <li class="relative" data-dropdown>
+          <button class="dropdown-trigger flex items-center gap-1 px-4 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800 rounded-lg cursor-pointer border-none bg-transparent font-poppins">Account <i class="uil uil-angle-down text-base dropdown-chevron" style="transition:transform 0.2s;"></i></button>
+          <div class="dropdown-menu absolute top-full left-0 mt-2 w-48 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-xl shadow-xl p-1.5 z-50 opacity-0 invisible pointer-events-none" style="transition:opacity 0.18s ease,transform 0.18s ease;transform:translateY(6px);">
+            <a href="billing-history.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-receipt"></i> Billing History</a>
+            <a href="payment.html"         class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-credit-card"></i> Payment</a>
+            <a href="complaint.html"       class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-comment-exclamation"></i> Complaint</a>
+          </div>
+        </li>
+      </ul>
+      <div class="flex items-center gap-2">
+        <button id="darkToggle" class="w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-full border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 shadow-sm cursor-pointer"><i id="themeIcon" class="uil uil-sun text-base"></i></button>
+        <div class="relative" id="avatarDropdown">
+          <div id="avatarTrigger" class="w-8 h-8 md:w-9 md:h-9 rounded-full overflow-hidden border-2 border-neutral-200 dark:border-neutral-700 cursor-pointer">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&q=80" alt="Avatar" class="w-full h-full object-cover"/>
+          </div>
+          <div id="avatarMenu" class="absolute top-full right-0 mt-2 w-44 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-xl shadow-xl p-1.5 z-50 opacity-0 invisible pointer-events-none" style="transition:opacity 0.18s ease,transform 0.18s ease;transform:translateY(6px);">
+            <a href="profile.html"  class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-user"></i> Profile</a>
+            <a href="settings.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-setting"></i> Settings</a>
+            <div class="my-1 border-t border-neutral-100 dark:border-neutral-800"></div>
+            <a href="index.html" class="flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg"><i class="uil uil-sign-out-alt"></i> Logout</a>
+          </div>
+        </div>
+        <button id="menuToggle" class="md:hidden flex items-center justify-center w-8 h-8 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer border-none bg-transparent text-neutral-700 dark:text-neutral-300"><i id="menuIcon" class="uil uil-bars text-xl"></i></button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="md:hidden border-t border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-950">
+      <div class="px-4 py-3 flex flex-col gap-1">
+        <a href="index.html" class="px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-800">Home</a>
+        <a href="booked.html" class="px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-800">← Back to Booked</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header actions -->
+  <div class="max-w-5xl mx-auto px-4 md:px-8 pt-20 pb-4 no-print">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <a href="booked.html" class="inline-flex items-center gap-1.5 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white mb-2" style="text-decoration:none;">
+          <i class="uil uil-arrow-left text-base"></i> Back to Bookings
+        </a>
+        <h1 class="text-2xl font-semibold">Lease Contract</h1>
+        <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-0.5" id="pageCountLabel">Contract No. AMS-2025-0301 · Active</p>
+      </div>
+      <div class="flex gap-2 shrink-0">
+        <button onclick="window.print()" class="flex items-center gap-1.5 text-xs font-medium px-4 py-2.5 rounded-xl border border-neutral-200 dark:border-neutral-700 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-800 cursor-pointer bg-transparent font-poppins">
+          <i class="uil uil-print text-base"></i> Print
+        </button>
+        <button onclick="showToast('Contract downloaded as PDF!')" class="flex items-center gap-1.5 text-xs font-medium px-4 py-2.5 rounded-xl bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 hover:opacity-80 cursor-pointer border-none font-poppins">
+          <i class="uil uil-download-alt text-base"></i> Download PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Document tray ══ -->
+  <div class="doc-tray" id="docTray">
+    <!-- Pages are injected here by JS -->
+  </div>
+
+  <!-- ══ Hidden contract source (JS reads child nodes and paginates) ══ -->
+  <div id="contractSource">
+
+    <!-- ── FIRST PAGE HEADER (letterhead) ── -->
+    <div data-header="first">
+      <div class="stamp">ACTIVE</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <p class="lh-logo">AMS</p>
+          <p class="lh-sub">Property Management</p>
+          <p class="lh-addr">18 Rosal Street, Barangay Capri<br/>Novaliches, Quezon City 1123<br/>Tel: (02) 8-123-4567 &middot; ams.properties@email.com</p>
+        </div>
+        <div style="text-align:right;">
+          <p class="lh-addr" style="margin-top:0;">Contract No.: <strong>AMS-2025-0301</strong></p>
+          <p class="lh-addr">Date Executed: <strong>February 28, 2025</strong></p>
+          <p class="lh-addr">Status: <strong style="color:#16a34a;">Active</strong></p>
+        </div>
+      </div>
+      <hr class="lh-line"/><hr class="lh-thin"/>
+      <p class="doc-title">Contract of Lease</p>
+      <p class="doc-subtitle">(Residential)</p>
+    </div>
+
+    <!-- ── CONTINUATION HEADER (pages 2+) ── -->
+    <div data-header="cont">
+      <div class="cont-header">
+        <p class="cont-logo">AMS Property Management</p>
+        <p class="cont-ref">Contract No. AMS-2025-0301</p>
+      </div>
+      <hr class="lh-line" style="margin:8px 0 3px;"/><hr class="lh-thin" style="margin:0 0 10px;"/>
+    </div>
+
+    <!-- ── CONTRACT CONTENT NODES ── -->
+    <!-- Each direct child below is a "block" — JS moves them one-by-one into pages -->
+    <div data-content>
+
+      <div class="doc-body-content">
+        <p class="indent">This <strong>Contract of Lease</strong> (hereinafter referred to as the &ldquo;<strong>Agreement</strong>&rdquo;) is entered into and executed this <strong>28th day of February 2025</strong>, in the City of Quezon, Philippines, by and between:</p>
+        <p style="margin-left:2em;margin-right:2em;"><strong>AMS PROPERTY MANAGEMENT</strong>, a property management entity duly organized and existing under the laws of the Republic of the Philippines, with principal office address at 18 Rosal Street, Barangay Capri, Novaliches, Quezon City, herein represented by its duly authorized representative, hereinafter referred to as the &ldquo;<strong>LESSOR</strong>&rdquo;;</p>
+        <p style="text-align:center;font-weight:700;letter-spacing:0.1em;margin:8px 0;">&mdash; and &mdash;</p>
+        <p style="margin-left:2em;margin-right:2em;"><strong>JUAN DELA CRUZ</strong>, of legal age, Filipino citizen, with residential address at 123 Sampaguita Street, Quezon City, bearing Government ID No. 1234-5678-9012, hereinafter referred to as the &ldquo;<strong>LESSEE</strong>&rdquo;;</p>
+        <p class="indent">The LESSOR and LESSEE shall be collectively referred to herein as the &ldquo;<strong>Parties</strong>.&rdquo;</p>
+        <div class="witnesseth">W I T N E S S E T H :</div>
+        <p class="indent">WHEREAS, the LESSOR is the owner and/or duly authorized administrator of the residential unit described herein and desires to lease the same to the LESSEE under the terms and conditions set forth in this Agreement;</p>
+        <p class="indent">WHEREAS, the LESSEE desires to lease the said residential unit from the LESSOR for residential purposes only;</p>
+        <p class="indent">NOW, THEREFORE, for and in consideration of the mutual covenants and agreements contained herein, and other good and valuable considerations, the receipt and sufficiency of which are hereby acknowledged, the Parties agree as follows:</p>
+      </div>
+
+      <p class="article-title no-border" style="margin-top:14px;">Article I &mdash; Description of Leased Premises</p>
+      <div class="doc-body-content">
+        <p class="indent">Section 1.01. The LESSOR hereby leases unto the LESSEE the following residential unit, and the LESSEE hereby accepts such lease:</p>
+        <p style="margin-left:2em;"><strong>Unit Designation:</strong> Sky Terrace &mdash; Room No. 301<br/><strong>Location:</strong> 4th Floor, 18 Rosal Street, Barangay Capri, Novaliches, Quezon City 1123<br/><strong>Floor Area:</strong> Approximately thirty-two (32) square meters<br/><strong>Furnishing:</strong> Fully Furnished (air conditioning unit, bed frame, mattress, cabinet, study table, and chair)<br/><strong>Common Areas:</strong> Shared kitchen, hallways, lobby, and laundry area</p>
+        <p class="indent">Section 1.02. The LESSEE acknowledges having inspected the leased premises and received the same in good and tenantable condition.</p>
+      </div>
+
+      <p class="article-title">Article II &mdash; Term of Lease</p>
+      <div class="doc-body-content">
+        <p class="indent">Section 2.01. This Agreement shall be effective for a period of <strong>three (3) months</strong>, commencing on <strong>March 1, 2025</strong> and ending on <strong>May 31, 2025</strong>, unless sooner terminated in accordance with the provisions hereof.</p>
+        <p class="indent">Section 2.02. At the expiration of the lease term, this Agreement may be renewed upon mutual written agreement of the Parties, subject to such terms and conditions as may then be agreed upon.</p>
+        <p class="indent">Section 2.03. Holdover tenancy beyond the stipulated term without written renewal shall be treated as a month-to-month tenancy subject to the same terms herein, unless either party provides thirty (30) days written notice of termination.</p>
+      </div>
+
+      <p class="article-title">Article III &mdash; Rental Rate and Payment</p>
+      <div class="doc-body-content">
+        <p class="indent">Section 3.01. The LESSEE agrees to pay the LESSOR a monthly rental of <strong>THREE THOUSAND FIVE HUNDRED PESOS (&#8369;3,500.00)</strong>, Philippine Currency, inclusive of electricity, water, and internet connection.</p>
+        <p class="indent">Section 3.02. Rental payments shall be due and payable on or before the <strong>5th day</strong> of each calendar month. Payments may be made via GCash, Maya, bank transfer, or cash at the management office.</p>
+        <p class="indent">Section 3.03. A late payment penalty of <strong>TWO HUNDRED PESOS (&#8369;200.00)</strong> per day shall be imposed for each day of delay beyond the 10th day of the month.</p>
+        <p class="indent">Section 3.04. Upon execution of this Agreement, the LESSEE has paid the LESSOR a <strong>Security Deposit</strong> equivalent to one (1) month&rsquo;s rent, amounting to <strong>THREE THOUSAND FIVE HUNDRED PESOS (&#8369;3,500.00)</strong>, receipt of which is hereby acknowledged.</p>
+        <p class="indent">Section 3.05. The security deposit shall not be applied to any monthly rental. It shall be returned within thirty (30) days after lease expiration, less deductions for unpaid rent or damages attributable to the LESSEE.</p>
+      </div>
+
+      <p class="article-title">Article IV &mdash; Use of Premises</p>
+      <div class="doc-body-content">
+        <p class="indent">Section 4.01. The LESSEE shall use the leased premises solely and exclusively for <strong>residential purposes</strong>. Any commercial, industrial, or other non-residential use is strictly prohibited without prior written consent from the LESSOR.</p>
+        <p class="indent">Section 4.02. The LESSEE shall not conduct any illegal, immoral, or offensive activity on the premises that may disturb the peace, safety, or comfort of other residents or neighboring occupants.</p>
+        <p class="indent">Section 4.03. The LESSEE shall comply with all applicable laws, ordinances, and regulations of the Republic of the Philippines and the local government of Quezon City pertaining to the use of the leased premises.</p>
+      </div>
+
+      <p class="article-title">Article V &mdash; Maintenance, Repairs, and Alterations</p>
+      <div class="doc-body-content">
+        <p class="indent">Section 5.01. The LESSEE shall maintain the leased premises in a clean, sanitary, and habitable condition at all times. The LESSEE shall be responsible for ordinary upkeep, including regular cleaning, proper disposal of garbage, and minor repairs costing less than FIVE HUNDRED PESOS (&#8369;500.00).</p>
+        <p class="indent">Section 5.02. Major repairs necessitated by structural defects, normal wear and tear, or force majeure events shall be for the account of the LESSOR, provided that the LESSEE promptly notifies the LESSOR through the designated maintenance request channel.</p>
+        <p class="indent">Section 5.03. Any damage caused by the negligence, misuse, or willful act of the LESSEE or guests shall be repaired at the LESSEE&rsquo;s sole expense. If the LESSEE fails to make such repairs, the LESSOR may do so and charge the cost accordingly.</p>
+        <p class="indent">Section 5.04. No structural alterations, improvements, or modifications shall be made to the premises without prior written consent. Any approved improvements shall become property of the LESSOR upon termination without reimbursement.</p>
+      </div>
+
+      <p class="article-title">Article VI &mdash; House Rules and Conduct</p>
+      <div class="doc-body-content">
+        <p class="indent">Section 6.01. The LESSEE acknowledges receipt of and agrees to be bound by the <strong>House Rules and Regulations</strong> of AMS Property Management, incorporated herein by reference. Key provisions include:</p>
+        <p style="margin-left:2em;">(a) <strong>Quiet Hours:</strong> 10:00 PM to 7:00 AM daily. Excessive noise or disruptive behavior is strictly prohibited during these hours;<br/>(b) <strong>No Smoking:</strong> Strictly prohibited inside the unit, hallways, and all enclosed common areas;<br/>(c) <strong>No Pets:</strong> Animals of any kind are not permitted within the premises;<br/>(d) <strong>Visitors:</strong> Overnight guests are permitted for a maximum of three (3) consecutive nights per month and must register at the lobby;<br/>(e) <strong>Subletting:</strong> The LESSEE shall not assign, sublet, or transfer any rights under this Agreement without prior written approval from the LESSOR.</p>
+        <p class="indent">Section 6.02. Violations of the House Rules may result in written warning, additional charges, or termination of this Agreement at the discretion of the LESSOR.</p>
+      </div>
+
+      <p class="article-title">Article VII &mdash; Termination</p>
+      <div class="doc-body-content">
+        <p class="indent">Section 7.01. <strong>Termination by the LESSOR.</strong> The LESSOR may terminate this Agreement upon thirty (30) days written notice for: (a) non-payment of rent; (b) material violation of any provision hereof; (c) use of the premises for unlawful purposes; or (d) such other grounds recognized under applicable Philippine law.</p>
+        <p class="indent">Section 7.02. <strong>Pre-termination by the LESSEE.</strong> Should the LESSEE wish to terminate this Agreement prior to the lease end, at least thirty (30) days advance written notice is required. Pre-termination shall result in forfeiture of the security deposit as liquidated damages.</p>
+        <p class="indent">Section 7.03. Upon termination or expiration, the LESSEE shall surrender the premises in the same condition as received, reasonable wear and tear excepted, and return all keys and access cards to the LESSOR.</p>
+      </div>
+
+      <p class="article-title">Article VIII &mdash; Miscellaneous Provisions</p>
+      <div class="doc-body-content">
+        <p class="indent">Section 8.01. <strong>Governing Law.</strong> This Agreement shall be governed by the laws of the Republic of the Philippines, particularly Civil Code Articles 1642&ndash;1688 on Lease and applicable housing laws.</p>
+        <p class="indent">Section 8.02. <strong>Dispute Resolution.</strong> Any dispute arising out of or in connection with this Agreement shall first be subject to amicable settlement. If unresolved within fifteen (15) days, the matter shall be submitted to the appropriate courts of Quezon City.</p>
+        <p class="indent">Section 8.03. <strong>Entire Agreement.</strong> This Agreement constitutes the entire understanding between the Parties and supersedes all prior negotiations, representations, or agreements, whether oral or written.</p>
+        <p class="indent">Section 8.04. <strong>Severability.</strong> If any provision of this Agreement is declared invalid or unenforceable, the remaining provisions shall continue to be valid and binding upon the Parties.</p>
+        <p class="indent">Section 8.05. <strong>Amendments.</strong> No amendment or modification of any provision hereof shall be valid unless made in writing and duly signed by both Parties.</p>
+      </div>
+
+      <!-- Signatures title + preamble sentence — one block -->
+      <div>
+        <p class="article-title">Signatures</p>
+        <div class="doc-body-content">
+          <p class="indent">IN WITNESS WHEREOF, the Parties have hereunto set their hands on the date and at the place first above written.</p>
+        </div>
+      </div>
+
+      <!-- Signature lines — one block -->
+      <div class="sig-grid">
+        <div>
+          <p style="font-size:10px;font-style:italic;color:#525252;margin-bottom:0;"><em>For the LESSOR:</em></p>
+          <div class="sig-space"></div>
+          <div class="sig-line"></div>
+          <p class="sig-name">AMS PROPERTY MANAGEMENT</p>
+          <p class="sig-role">By: Authorized Representative</p>
+          <p class="sig-date">Date: February 28, 2025</p>
+          <p class="sig-date" style="margin-top:8px;">TIN: 123-456-789-000</p>
+        </div>
+        <div>
+          <p style="font-size:10px;font-style:italic;color:#525252;margin-bottom:0;"><em>For the LESSEE:</em></p>
+          <div class="sig-space"></div>
+          <div class="sig-line"></div>
+          <p class="sig-name">JUAN DELA CRUZ</p>
+          <p class="sig-role">Tenant / Lessee</p>
+          <p class="sig-date">Date: February 28, 2025</p>
+          <p class="sig-date" style="margin-top:8px;">Gov&rsquo;t ID No.: 1234-5678-9012</p>
+        </div>
+      </div>
+
+      <!-- Witnesses — one block -->
+      <div style="margin-top:20px;">
+        <p style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;font-family:'Times New Roman',serif;">Signed in the presence of:</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;">
+          <div><div class="sig-line"></div><p style="font-size:10px;color:#737373;margin-top:4px;">Witness No. 1 &mdash; Signature over Printed Name</p></div>
+          <div><div class="sig-line"></div><p style="font-size:10px;color:#737373;margin-top:4px;">Witness No. 2 &mdash; Signature over Printed Name</p></div>
+        </div>
+      </div>
+
+      <!-- Notarization — one block (always kept together) -->
+      <div class="notary-block">
+        <p class="notary-title">Acknowledgment</p>
+        <p class="notary-body">
+          REPUBLIC OF THE PHILIPPINES &nbsp;&nbsp;&nbsp; )<br/>
+          CITY OF QUEZON &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ) S.S.<br/>&nbsp;<br/>
+          BEFORE ME, a Notary Public for and in the City of Quezon, this <span class="notary-fill">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> day of <span class="notary-fill">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>, personally appeared the following:
+        </p>
+        <table class="notary-table">
+          <tr><td><strong>Name</strong></td><td><strong>Government ID</strong></td><td><strong>Date / Place Issued</strong></td></tr>
+          <tr><td>AMS Property Management (Rep.)</td><td>TIN 123-456-789-000</td><td>BIR, Quezon City</td></tr>
+          <tr><td>Juan Dela Cruz</td><td>Phil. Nat&rsquo;l ID 1234-5678-9012</td><td>PSA, Jan 15, 2022</td></tr>
+        </table>
+        <p class="notary-body">known to me and to me known to be the same persons who executed the foregoing instrument and acknowledged that the same is their free and voluntary act and deed.<br/><br/>This instrument consisting of <strong id="totalPagesText">several pages</strong>, including the page on which this acknowledgment is written, has been signed on each page by the parties and their witnesses, and sealed with my notarial seal.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:16px;">
+          <div>
+            <div class="sig-line"></div>
+            <p style="font-size:10px;color:#737373;margin-top:3px;">NOTARY PUBLIC</p>
+            <p style="font-size:10px;color:#737373;">PTR No. _______ / IBP No. _______</p>
+            <p style="font-size:10px;color:#737373;">Until December 31, 2025 &middot; Quezon City</p>
+            <p style="font-size:10px;color:#737373;">Roll No. _______ &middot; MCLE No. _______</p>
+          </div>
+          <div style="text-align:right;font-size:10px;color:#737373;">
+            <p>Doc. No.: _____</p><p>Page No.: _____</p><p>Book No.: _____</p><p>Series of: 2025</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /data-content -->
+  </div><!-- /contractSource -->
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-sm font-medium px-5 py-3 rounded-2xl shadow-xl z-50 opacity-0 pointer-events-none whitespace-nowrap no-print" style="transition:opacity 0.3s;">
+    <i class="uil uil-check-circle mr-2 text-green-400 dark:text-green-600"></i><span id="toastMsg">Done!</span>
+  </div>
+
+  <script>
+    // ── Dark mode ──
+    const html = document.documentElement;
+    const themeIcon = document.getElementById('themeIcon');
+    function applyTheme(dark) {
+      dark ? html.classList.add('dark') : html.classList.remove('dark');
+      themeIcon.className = dark ? 'uil uil-moon text-base' : 'uil uil-sun text-base';
+    }
+    const savedTheme = localStorage.getItem('theme');
+    applyTheme(savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches));
+    document.getElementById('darkToggle').addEventListener('click', () => {
+      const d = html.classList.contains('dark');
+      localStorage.setItem('theme', d ? 'light' : 'dark');
+      applyTheme(!d);
+    });
+
+    // ── Mobile menu ──
+    let menuOpen = false;
+    document.getElementById('menuToggle').addEventListener('click', () => {
+      menuOpen = !menuOpen;
+      document.getElementById('mobileMenu').classList.toggle('open', menuOpen);
+      document.getElementById('menuIcon').className = menuOpen ? 'uil uil-times text-xl' : 'uil uil-bars text-xl';
+    });
+
+    // ── Avatar ──
+    const avatarTrigger = document.getElementById('avatarTrigger');
+    const avatarMenu    = document.getElementById('avatarMenu');
+    const avatarWrapper = document.getElementById('avatarDropdown');
+    let avatarOpen = false;
+    const openAvatar  = () => { avatarOpen=true;  avatarMenu.style.cssText='transform:translateY(0);opacity:1;visibility:visible;'; avatarMenu.classList.remove('pointer-events-none'); };
+    const closeAvatar = () => { avatarOpen=false; avatarMenu.style.cssText='transform:translateY(6px);opacity:0;visibility:hidden;'; avatarMenu.classList.add('pointer-events-none'); };
+    avatarTrigger.addEventListener('click', e => { e.stopPropagation(); avatarOpen ? closeAvatar() : openAvatar(); });
+    document.addEventListener('click', e => { if (!avatarWrapper.contains(e.target)) closeAvatar(); });
+
+    // ── Nav dropdowns ──
+    document.querySelectorAll('[data-dropdown]').forEach(item => {
+      const menu = item.querySelector('.dropdown-menu'), chevron = item.querySelector('.dropdown-chevron');
+      let t = null;
+      const open  = () => { clearTimeout(t); menu.style.cssText='transform:translateY(0);opacity:1;visibility:visible;'; menu.classList.remove('pointer-events-none'); if(chevron)chevron.style.transform='rotate(180deg)'; };
+      const close = () => { t=setTimeout(()=>{ menu.style.cssText='transform:translateY(6px);opacity:0;visibility:hidden;'; menu.classList.add('pointer-events-none'); if(chevron)chevron.style.transform='rotate(0deg)'; },120); };
+      item.querySelector('.dropdown-trigger').addEventListener('mouseenter', open);
+      item.querySelector('.dropdown-trigger').addEventListener('mouseleave', close);
+      menu.addEventListener('mouseenter', open); menu.addEventListener('mouseleave', close);
+      item.querySelector('.dropdown-trigger').addEventListener('click', () => menu.style.visibility==='visible' ? close() : open());
+      document.addEventListener('click', e => { if (!item.contains(e.target)) close(); });
+    });
+
+    // ── Toast ──
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      t.style.opacity = '1'; t.classList.remove('pointer-events-none');
+      clearTimeout(t._t);
+      t._t = setTimeout(() => { t.style.opacity='0'; t.classList.add('pointer-events-none'); }, 3000);
+    }
+
+    // ════════════════════════════════════════════════
+    // ── AUTO-PAGINATOR ──
+    // Measures each content block and distributes them
+    // across A4 pages so nothing ever overflows.
+    // ════════════════════════════════════════════════
+    function paginate() {
+      const tray     = document.getElementById('docTray');
+      const source   = document.getElementById('contractSource');
+      const firstHdr = source.querySelector('[data-header="first"]');
+      const contHdr  = source.querySelector('[data-header="cont"]');
+      const content  = source.querySelector('[data-content]');
+
+      // All direct children of [data-content] are our blocks
+      const blocks = Array.from(content.children);
+
+      tray.innerHTML = ''; // clear
+
+      // ── Measure helpers ──
+      // Create an off-screen measuring page
+      const measure = document.createElement('div');
+      measure.className = 'doc-page';
+      measure.style.cssText = 'position:fixed;top:-9999px;left:-9999px;visibility:hidden;';
+      document.body.appendChild(measure);
+
+      // Get the usable body height of one page in px
+      // Page: 297mm - padding-top(14mm) - footer(14mm) - padding-bottom approx 4mm = 265mm usable
+      // We'll measure dynamically instead
+      function makePageBody() {
+        const body = document.createElement('div');
+        body.className = 'page-body';
+        return body;
+      }
+
+      function getPageBodyHeight() {
+        // 297mm page, 14mm top header, 14mm footer, rest is body
+        // Compute in px by measuring a real page
+        const testPage = document.createElement('div');
+        testPage.className = 'doc-page';
+        testPage.style.cssText = 'position:fixed;top:-9999px;left:-9999px;visibility:hidden;';
+        const testBody = makePageBody();
+        testBody.style.overflow = 'visible';
+        testPage.appendChild(testBody);
+        document.body.appendChild(testPage);
+        const h = testBody.getBoundingClientRect().height;
+        document.body.removeChild(testPage);
+        return h;
+      }
+
+      const PAGE_BODY_H = getPageBodyHeight();
+
+      // ── Build pages ──
+      let pages = [];
+      let currentBlocks = [];
+      let currentH = 0;
+      let isFirst = true;
+
+      function blockHeight(node) {
+        // Clone into measuring div to get rendered height
+        const clone = node.cloneNode(true);
+        measure.innerHTML = '';
+        measure.appendChild(clone);
+        return clone.getBoundingClientRect().height;
+      }
+
+      for (const block of blocks) {
+        const h = blockHeight(block);
+
+        // If this block alone is taller than the page, give it its own page
+        if (h > PAGE_BODY_H * 0.93) {
+          if (currentBlocks.length > 0) {
+            pages.push({ blocks: currentBlocks, isFirst });
+            isFirst = false;
+          }
+          pages.push({ blocks: [block], isFirst });
+          isFirst = false;
+          currentBlocks = [];
+          currentH = 0;
+          continue;
+        }
+
+        if (currentH + h > PAGE_BODY_H * 0.93 && currentBlocks.length > 0) {
+          // Flush current page
+          pages.push({ blocks: currentBlocks, isFirst });
+          currentBlocks = [];
+          currentH = 0;
+          isFirst = false;
+        }
+        currentBlocks.push(block);
+        currentH += h;
+      }
+      if (currentBlocks.length > 0) {
+        pages.push({ blocks: currentBlocks, isFirst });
+      }
+
+      document.body.removeChild(measure);
+
+      // ── Render pages ──
+      const total = pages.length;
+
+      // Update notary text
+      const notaryText = document.getElementById('totalPagesText');
+      if (notaryText) {
+        const words = ['one','two','three','four','five','six','seven','eight','nine','ten'];
+        notaryText.textContent = `${words[total-1] || total} (${total}) pages`;
+      }
+
+      // Update header label
+      document.getElementById('pageCountLabel').textContent =
+        `Contract No. AMS-2025-0301 · ${total} page${total!==1?'s':''} · Active`;
+
+      pages.forEach((pg, idx) => {
+        const page = document.createElement('div');
+        page.className = 'doc-page';
+        page.id = `page-${idx+1}`;
+
+        // Header
+        const hdr = document.createElement('div');
+        hdr.className = 'page-header';
+        const hdrSrc = pg.isFirst ? firstHdr : contHdr;
+        hdr.appendChild(hdrSrc.cloneNode(true));
+        page.appendChild(hdr);
+
+        // Body
+        const body = document.createElement('div');
+        body.className = 'page-body';
+        pg.blocks.forEach(b => body.appendChild(b.cloneNode(true)));
+        page.appendChild(body);
+
+        // Footer
+        const footer = document.createElement('div');
+        footer.className = 'page-footer-bar';
+        footer.innerHTML = `<span>Page ${idx+1} of ${total}</span><span>Contract No. AMS-2025-0301</span>`;
+        page.appendChild(footer);
+
+        tray.appendChild(page);
+      });
+    }
+
+    // Run paginator after fonts load for accurate measurements
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(paginate);
+    } else {
+      window.addEventListener('load', paginate);
+    }
+  </script>
+</body>
+</html>

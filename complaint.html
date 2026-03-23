@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Complaint — Apartment</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{poppins:['Poppins','sans-serif']},borderRadius:{'4xl':'2rem','5xl':'3rem'}}}}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css"/>
+  <style>
+    body{font-family:'Poppins',sans-serif;}
+    .nav-blur{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+    #mobileMenu{max-height:0;overflow:hidden;transition:max-height 0.35s ease;}
+    #mobileMenu.open{max-height:600px;}
+    .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+    .reveal.visible{opacity:1;transform:none;}
+    img{transition:none !important;}
+    *,*::before,*::after{transition:background-color 0.25s,border-color 0.25s,color 0.2s,box-shadow 0.2s,opacity 0.2s,transform 0.2s;}
+    .cat-chip{cursor:pointer;padding:6px 16px;border-radius:50px;font-size:12px;font-weight:500;border:1.5px solid #e5e5e5;color:#737373;background:transparent;}
+    .dark .cat-chip{border-color:#404040;color:#a3a3a3;}
+    .cat-chip.active{background:#171717;color:#fff;border-color:#171717;}
+    .dark .cat-chip.active{background:#fff;color:#171717;border-color:#fff;}
+    .badge-open{background:#fef9c3;color:#ca8a04;}
+    .badge-inprogress{background:#dbeafe;color:#2563eb;}
+    .badge-resolved{background:#dcfce7;color:#16a34a;}
+    .dark .badge-open{background:rgba(234,179,8,0.15);color:#facc15;}
+    .dark .badge-inprogress{background:rgba(37,99,235,0.15);color:#60a5fa;}
+    .dark .badge-resolved{background:rgba(22,163,74,0.15);color:#4ade80;}
+    #toast{transition:opacity 0.3s;}
+    /* ── Custom Select ── */
+    .c-select{position:relative;}
+    .c-select-trigger{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;font-size:13px;font-family:inherit;cursor:pointer;border-radius:12px;border:1.5px solid #e5e5e5;background:#fafafa;color:#171717;transition:border-color 0.2s,background 0.2s;}
+    .dark .c-select-trigger{border-color:#404040;background:#262626;color:#f5f5f5;}
+    .c-select-trigger:hover{border-color:#a3a3a3;}
+    .dark .c-select-trigger:hover{border-color:#737373;}
+    .c-select.open .c-select-trigger{border-color:#171717;}
+    .dark .c-select.open .c-select-trigger{border-color:#e5e5e5;}
+    .c-select-left{display:flex;align-items:center;gap:8px;}
+    .c-select-left i{font-size:16px;flex-shrink:0;}
+    .c-chevron{font-size:18px;color:#a3a3a3;transition:transform 0.2s;flex-shrink:0;}
+    .c-select.open .c-chevron{transform:rotate(180deg);}
+    .c-select-menu{position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:200;background:#fff;border:1.5px solid #e5e5e5;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,0.1);padding:5px;opacity:0;visibility:hidden;transform:translateY(6px);transition:opacity 0.18s ease,transform 0.18s ease,visibility 0.18s;}
+    .dark .c-select-menu{background:#1c1c1c;border-color:#404040;box-shadow:0 8px 30px rgba(0,0,0,0.5);}
+    .c-select.open .c-select-menu{opacity:1;visibility:visible;transform:translateY(0);}
+    .c-opt{display:flex;align-items:center;gap:10px;padding:9px 12px;font-size:13px;border-radius:9px;cursor:pointer;color:#404040;transition:background 0.15s,color 0.15s;}
+    .dark .c-opt{color:#d4d4d4;}
+    .c-opt:hover{background:#f5f5f5;color:#171717;}
+    .dark .c-opt:hover{background:#2a2a2a;color:#fff;}
+    .c-opt.selected{background:#f0f0f0;color:#171717;font-weight:500;}
+    .dark .c-opt.selected{background:#2a2a2a;color:#fff;}
+    .c-opt i{font-size:15px;width:18px;text-align:center;flex-shrink:0;}
+  </style>
+</head>
+<body class="bg-neutral-100 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100 font-poppins">
+
+  <!-- NAVBAR -->
+  <nav class="nav-blur fixed top-0 left-0 right-0 z-50 bg-neutral-100/85 dark:bg-neutral-950/85 border-b border-neutral-200 dark:border-neutral-800">
+    <div class="h-14 md:h-16 flex items-center justify-between px-4 md:px-10">
+      <a href="index.html" class="w-11 h-11"><img src="ams-logo.png" alt="Logo" class="w-full h-full object-contain"/></a>
+      <ul class="hidden md:flex items-center gap-1 list-none m-0 p-0">
+        <li><a href="index.html" class="px-4 py-2 text-sm font-medium rounded-lg text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-white block">Home</a></li>
+        <li class="relative" data-dropdown>
+          <button class="dropdown-trigger flex items-center gap-1 px-4 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800 rounded-lg cursor-pointer border-none bg-transparent font-poppins">My Rooms <i class="uil uil-angle-down text-base dropdown-chevron" style="transition:transform 0.2s;"></i></button>
+          <div class="dropdown-menu absolute top-full left-0 mt-2 w-44 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-xl shadow-xl p-1.5 z-50 opacity-0 invisible pointer-events-none" style="transition:opacity 0.18s ease,transform 0.18s ease;transform:translateY(6px);">
+            <a href="all-rooms.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-apps"></i> All Rooms</a>
+            <a href="booked.html"    class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-calendar-alt"></i> Booked</a>
+            <a href="favorites.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-heart"></i> Favorites</a>
+          </div>
+        </li>
+        <li class="relative" data-dropdown>
+          <button class="dropdown-trigger flex items-center gap-1 px-4 py-2 text-sm font-semibold text-neutral-900 dark:text-white bg-neutral-200 dark:bg-neutral-800 rounded-lg cursor-pointer border-none bg-transparent font-poppins">Account <i class="uil uil-angle-down text-base dropdown-chevron" style="transition:transform 0.2s;"></i></button>
+          <div class="dropdown-menu absolute top-full left-0 mt-2 w-48 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-xl shadow-xl p-1.5 z-50 opacity-0 invisible pointer-events-none" style="transition:opacity 0.18s ease,transform 0.18s ease;transform:translateY(6px);">
+            <a href="billing-history.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-receipt"></i> Billing History</a>
+            <a href="payment.html"         class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-credit-card"></i> Payment</a>
+            <a href="complaint.html"       class="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 rounded-lg"><i class="uil uil-comment-exclamation"></i> Complaint</a>
+          </div>
+        </li>
+      </ul>
+      <div class="flex items-center gap-2">
+        <button id="darkToggle" class="w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-full border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 shadow-sm cursor-pointer"><i id="themeIcon" class="uil uil-sun text-base"></i></button>
+        <div class="relative" id="avatarDropdown">
+          <div id="avatarTrigger" class="w-8 h-8 md:w-9 md:h-9 rounded-full overflow-hidden border-2 border-neutral-200 dark:border-neutral-700 cursor-pointer"><img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&q=80" alt="Avatar" class="w-full h-full object-cover"/></div>
+          <div id="avatarMenu" class="absolute top-full right-0 mt-2 w-44 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-xl shadow-xl p-1.5 z-50 opacity-0 invisible pointer-events-none" style="transition:opacity 0.18s ease,transform 0.18s ease;transform:translateY(6px);">
+            <a href="profile.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-user"></i> Profile</a>
+            <a href="settings.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-setting"></i> Settings</a>
+            <div class="my-1 border-t border-neutral-100 dark:border-neutral-800"></div>
+            <a href="#" class="flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg"><i class="uil uil-sign-out-alt"></i> Logout</a>
+          </div>
+        </div>
+        <button id="menuToggle" class="md:hidden flex items-center justify-center w-8 h-8 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer border-none bg-transparent text-neutral-700 dark:text-neutral-300"><i id="menuIcon" class="uil uil-bars text-xl"></i></button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="md:hidden border-t border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-950">
+      <div class="px-4 py-3 flex flex-col gap-1">
+        <a href="index.html" class="px-4 py-2 text-sm font-medium rounded-lg text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-white block">Home</a>
+        <div><button onclick="toggleMobileSection('myRooms')" class="w-full flex items-center justify-between px-3 py-2.5 text-sm text-neutral-500 rounded-lg cursor-pointer border-none bg-transparent font-poppins text-left hover:bg-neutral-100 dark:hover:bg-neutral-800">My Rooms <i class="uil uil-angle-down text-lg" id="myRoomsIcon"></i></button>
+          <div id="myRooms" class="hidden flex-col pl-3 gap-1">
+            <a href="all-rooms.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 rounded-lg"><i class="uil uil-apps"></i> All Rooms</a>
+            <a href="booked.html"    class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 rounded-lg"><i class="uil uil-calendar-alt"></i> Booked</a>
+            <a href="favorites.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 rounded-lg"><i class="uil uil-heart"></i> Favorites</a>
+          </div>
+        </div>
+        <div><button onclick="toggleMobileSection('accountMenu')" class="w-full flex items-center justify-between px-3 py-2.5 text-sm font-semibold rounded-lg cursor-pointer border-none bg-transparent font-poppins text-left hover:bg-neutral-100 dark:hover:bg-neutral-800">Account <i class="uil uil-angle-down text-lg" id="accountMenuIcon"></i></button>
+          <div id="accountMenu" class="hidden flex-col pl-3 gap-1">
+            <a href="billing-history.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 rounded-lg"><i class="uil uil-receipt"></i> Billing History</a>
+            <a href="payment.html"         class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 rounded-lg"><i class="uil uil-credit-card"></i> Payment</a>
+            <a href="complaint.html"       class="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-neutral-900 dark:text-white rounded-lg"><i class="uil uil-comment-exclamation"></i> Complaint</a>
+          </div>
+        </div>
+        <div class="border-t border-neutral-200 dark:border-neutral-700 mt-1 pt-2">
+          <a href="#" class="flex items-center gap-2 px-3 py-2.5 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800"><i class="uil uil-user"></i> Profile</a>
+          <a href="#" class="flex items-center gap-2 px-3 py-2.5 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800"><i class="uil uil-setting"></i> Settings</a>
+          <a href="#" class="flex items-center gap-2 px-3 py-2.5 text-sm text-red-500 hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40"><i class="uil uil-sign-out-alt"></i> Logout</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-4xl mx-auto px-4 md:px-8 pt-24 pb-16">
+
+    <div class="mb-8 reveal">
+      <p class="text-xs font-medium tracking-widest uppercase text-neutral-400 mb-1">Account</p>
+      <h1 class="text-2xl md:text-3xl font-semibold mb-1">Complaints</h1>
+      <p class="text-sm text-neutral-500 dark:text-neutral-400">Report an issue or track existing complaints.</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+      <!-- New complaint form -->
+      <div class="lg:col-span-3 reveal">
+        <div class="bg-white dark:bg-neutral-900 rounded-3xl border border-neutral-100 dark:border-neutral-800 p-6">
+          <h2 class="text-sm font-semibold mb-5 flex items-center gap-2"><i class="uil uil-plus-circle text-base text-neutral-400"></i> New Complaint</h2>
+
+          <!-- Category -->
+          <div class="mb-4">
+            <label class="text-xs font-medium text-neutral-600 dark:text-neutral-400 block mb-2">Category</label>
+            <div class="flex flex-wrap gap-2" id="catChips">
+              <span class="cat-chip active" onclick="selectCat(this)">Maintenance</span>
+              <span class="cat-chip" onclick="selectCat(this)">Noise</span>
+              <span class="cat-chip" onclick="selectCat(this)">Billing</span>
+              <span class="cat-chip" onclick="selectCat(this)">Security</span>
+              <span class="cat-chip" onclick="selectCat(this)">Cleanliness</span>
+              <span class="cat-chip" onclick="selectCat(this)">Other</span>
+            </div>
+          </div>
+
+          <!-- Subject -->
+          <div class="mb-4">
+            <label class="text-xs font-medium text-neutral-600 dark:text-neutral-400 block mb-1.5">Subject</label>
+            <input type="text" placeholder="Brief title of the issue" class="w-full px-3 py-2.5 text-sm rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 focus:outline-none focus:border-neutral-400" />
+          </div>
+
+          <!-- Priority -->
+          <div class="mb-4">
+            <label class="text-xs font-medium text-neutral-600 dark:text-neutral-400 block mb-1.5">Priority</label>
+            <div class="c-select" id="sel-priority">
+              <div class="c-select-trigger" onclick="toggleSelect('sel-priority')">
+                <div class="c-select-left">
+                  <i class="uil uil-arrow-growth text-yellow-500" id="sel-priority-icon"></i>
+                  <span id="sel-priority-label">Medium — needs attention</span>
+                </div>
+                <i class="uil uil-angle-down c-chevron"></i>
+              </div>
+              <div class="c-select-menu">
+                <div class="c-opt" onclick="selectOpt('sel-priority','Low — not urgent','uil-minus-circle','text-neutral-400',this)">
+                  <i class="uil uil-minus-circle text-neutral-400"></i>
+                  <div><p class="text-sm font-medium">Low</p><p class="text-xs text-neutral-400 dark:text-neutral-500">Not urgent, resolve when possible</p></div>
+                </div>
+                <div class="c-opt selected" onclick="selectOpt('sel-priority','Medium — needs attention','uil-arrow-growth','text-yellow-500',this)">
+                  <i class="uil uil-arrow-growth text-yellow-500"></i>
+                  <div><p class="text-sm font-medium">Medium</p><p class="text-xs text-neutral-400 dark:text-neutral-500">Needs attention soon</p></div>
+                </div>
+                <div class="c-opt" onclick="selectOpt('sel-priority','High — urgent','uil-exclamation-triangle','text-red-500',this)">
+                  <i class="uil uil-exclamation-triangle text-red-500"></i>
+                  <div><p class="text-sm font-medium">High</p><p class="text-xs text-neutral-400 dark:text-neutral-500">Urgent — needs immediate action</p></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="mb-4">
+            <label class="text-xs font-medium text-neutral-600 dark:text-neutral-400 block mb-1.5">Description</label>
+            <textarea rows="4" placeholder="Describe the issue in detail — when it started, how often it occurs, and any other relevant information…" class="w-full px-3 py-2.5 text-sm rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 focus:outline-none focus:border-neutral-400 resize-none"></textarea>
+          </div>
+
+          <!-- Photo upload -->
+          <div class="mb-5">
+            <label class="text-xs font-medium text-neutral-600 dark:text-neutral-400 block mb-1.5">Attach Photos (optional)</label>
+            <div class="border-2 border-dashed border-neutral-200 dark:border-neutral-700 rounded-xl p-5 text-center cursor-pointer hover:border-neutral-400 dark:hover:border-neutral-500">
+              <i class="uil uil-image text-2xl text-neutral-400 block mb-1"></i>
+              <p class="text-xs text-neutral-500 dark:text-neutral-400">Click to upload photos of the issue</p>
+              <p class="text-xs text-neutral-400 mt-0.5">PNG, JPG up to 10MB each</p>
+            </div>
+          </div>
+
+          <button onclick="submitComplaint()" class="w-full bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 font-medium text-sm py-3 rounded-2xl hover:opacity-85 cursor-pointer border-none font-poppins">
+            Submit Complaint
+          </button>
+        </div>
+      </div>
+
+      <!-- Past complaints -->
+      <div class="lg:col-span-2 reveal">
+        <h2 class="text-sm font-semibold mb-4">Previous Complaints</h2>
+        <div class="space-y-3">
+
+          <div class="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-100 dark:border-neutral-800 p-4">
+            <div class="flex items-start justify-between gap-2 mb-2">
+              <p class="text-sm font-medium leading-snug">Leaking faucet in bathroom</p>
+              <span class="badge-resolved text-xs font-medium px-2.5 py-1 rounded-full shrink-0">Resolved</span>
+            </div>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400 mb-1">Maintenance · Room 301</p>
+            <p class="text-xs text-neutral-400">Submitted Apr 10, 2025 · Resolved Apr 12</p>
+          </div>
+
+          <div class="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-100 dark:border-neutral-800 p-4">
+            <div class="flex items-start justify-between gap-2 mb-2">
+              <p class="text-sm font-medium leading-snug">Loud music from adjacent room at night</p>
+              <span class="badge-inprogress text-xs font-medium px-2.5 py-1 rounded-full shrink-0">In Progress</span>
+            </div>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400 mb-1">Noise · Room 301</p>
+            <p class="text-xs text-neutral-400">Submitted Apr 22, 2025</p>
+          </div>
+
+          <div class="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-100 dark:border-neutral-800 p-4">
+            <div class="flex items-start justify-between gap-2 mb-2">
+              <p class="text-sm font-medium leading-snug">A/C unit not cooling properly</p>
+              <span class="badge-open text-xs font-medium px-2.5 py-1 rounded-full shrink-0">Open</span>
+            </div>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400 mb-1">Maintenance · Room 301</p>
+            <p class="text-xs text-neutral-400">Submitted Apr 28, 2025</p>
+          </div>
+
+          <div class="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-100 dark:border-neutral-800 p-4">
+            <div class="flex items-start justify-between gap-2 mb-2">
+              <p class="text-sm font-medium leading-snug">Hallway light bulb needs replacing</p>
+              <span class="badge-resolved text-xs font-medium px-2.5 py-1 rounded-full shrink-0">Resolved</span>
+            </div>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400 mb-1">Maintenance · 3rd Floor</p>
+            <p class="text-xs text-neutral-400">Submitted Mar 5, 2025 · Resolved Mar 6</p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-sm font-medium px-5 py-3 rounded-2xl shadow-xl z-50 opacity-0 pointer-events-none" style="transition:opacity 0.3s;">
+    <i class="uil uil-check-circle mr-2 text-green-400 dark:text-green-600"></i>Complaint submitted! We'll respond within 24 hours.
+  </div>
+
+  <script>
+    const html=document.documentElement,themeIcon=document.getElementById('themeIcon');
+    function applyTheme(d){d?html.classList.add('dark'):html.classList.remove('dark');themeIcon.className=d?'uil uil-moon text-base':'uil uil-sun text-base';}
+    const saved=localStorage.getItem('theme');
+    applyTheme(saved==='dark'||(!saved&&window.matchMedia('(prefers-color-scheme: dark)').matches));
+    document.getElementById('darkToggle').addEventListener('click',()=>{const d=html.classList.contains('dark');localStorage.setItem('theme',d?'light':'dark');applyTheme(!d);});
+    let menuOpen=false;
+    document.getElementById('menuToggle').addEventListener('click',()=>{menuOpen=!menuOpen;document.getElementById('mobileMenu').classList.toggle('open',menuOpen);document.getElementById('menuIcon').className=menuOpen?'uil uil-times text-xl':'uil uil-bars text-xl';});
+    function toggleMobileSection(id){const el=document.getElementById(id),icon=document.getElementById(id+'Icon'),isOpen=!el.classList.contains('hidden');el.classList.toggle('hidden',isOpen);el.classList.toggle('flex',!isOpen);if(icon)icon.className=isOpen?'uil uil-angle-down text-lg':'uil uil-angle-up text-lg';}
+    const avatarTrigger=document.getElementById('avatarTrigger'),avatarMenu=document.getElementById('avatarMenu'),avatarWrapper=document.getElementById('avatarDropdown');
+    let avatarOpen=false;
+    const openAvatar=()=>{avatarOpen=true;avatarMenu.style.cssText='transform:translateY(0);opacity:1;visibility:visible;';avatarMenu.classList.remove('pointer-events-none');};
+    const closeAvatar=()=>{avatarOpen=false;avatarMenu.style.cssText='transform:translateY(6px);opacity:0;visibility:hidden;';avatarMenu.classList.add('pointer-events-none');};
+    avatarTrigger.addEventListener('click',e=>{e.stopPropagation();avatarOpen?closeAvatar():openAvatar();});
+    document.addEventListener('click',e=>{if(!avatarWrapper.contains(e.target))closeAvatar();});
+    document.querySelectorAll('[data-dropdown]').forEach(item=>{const menu=item.querySelector('.dropdown-menu'),chevron=item.querySelector('.dropdown-chevron');let t=null;
+      const open=()=>{clearTimeout(t);menu.style.cssText='transform:translateY(0);opacity:1;visibility:visible;';menu.classList.remove('pointer-events-none');if(chevron)chevron.style.transform='rotate(180deg)';};
+      const close=()=>{t=setTimeout(()=>{menu.style.cssText='transform:translateY(6px);opacity:0;visibility:hidden;';menu.classList.add('pointer-events-none');if(chevron)chevron.style.transform='rotate(0deg)';},120);};
+      item.querySelector('.dropdown-trigger').addEventListener('mouseenter',open);item.querySelector('.dropdown-trigger').addEventListener('mouseleave',close);
+      menu.addEventListener('mouseenter',open);menu.addEventListener('mouseleave',close);
+      item.querySelector('.dropdown-trigger').addEventListener('click',()=>menu.style.visibility==='visible'?close():open());
+      document.addEventListener('click',e=>{if(!item.contains(e.target))close();});
+    });
+    function selectCat(chip){document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active'));chip.classList.add('active');}
+    function submitComplaint(){
+      const t=document.getElementById('toast');
+      t.style.opacity='1';t.classList.remove('pointer-events-none');
+      setTimeout(()=>{t.style.opacity='0';t.classList.add('pointer-events-none');},4000);
+    }
+    // ── Custom Select ──
+    function toggleSelect(id){
+      const el=document.getElementById(id),isOpen=el.classList.contains('open');
+      document.querySelectorAll('.c-select.open').forEach(s=>s.classList.remove('open'));
+      if(!isOpen)el.classList.add('open');
+    }
+    function selectOpt(selectId,label,icon,colorCls,optEl){
+      document.getElementById(selectId+'-label').textContent=label;
+      const iconEl=document.getElementById(selectId+'-icon');
+      iconEl.className='uil '+icon+' '+colorCls;
+      document.querySelectorAll('#'+selectId+' .c-opt').forEach(o=>o.classList.remove('selected'));
+      optEl.classList.add('selected');
+      document.getElementById(selectId).classList.remove('open');
+    }
+    document.addEventListener('click',e=>{if(!e.target.closest('.c-select'))document.querySelectorAll('.c-select.open').forEach(s=>s.classList.remove('open'));});
+    const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}}),{threshold:0.08});
+    document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  </script>
+</body>
+</html>

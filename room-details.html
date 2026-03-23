@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Room Details — Apartment</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: { fontFamily: { poppins: ['Poppins','sans-serif'] }, borderRadius: { '4xl':'2rem','5xl':'3rem' } } }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css" />
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+    .nav-blur { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+    #mobileMenu { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+    #mobileMenu.open { max-height: 600px; }
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    img:not(.thumb-img) { transition: none !important; }
+    *, *::before, *::after { transition: background-color 0.25s, border-color 0.25s, color 0.2s, box-shadow 0.2s, opacity 0.2s, transform 0.2s; }
+
+    /* ── Custom Select ── */
+    .c-select{position:relative;}
+    .c-select-trigger{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;font-size:13px;font-family:inherit;cursor:pointer;border-radius:12px;border:1.5px solid #e5e5e5;background:#fafafa;color:#171717;transition:border-color 0.2s,background 0.2s;}
+    .dark .c-select-trigger{border-color:#404040;background:#262626;color:#f5f5f5;}
+    .c-select-trigger:hover{border-color:#a3a3a3;}
+    .dark .c-select-trigger:hover{border-color:#737373;}
+    .c-select.open .c-select-trigger{border-color:#171717;}
+    .dark .c-select.open .c-select-trigger{border-color:#e5e5e5;}
+    .c-select-left{display:flex;align-items:center;gap:8px;}
+    .c-select-left i{font-size:16px;color:#737373;}
+    .dark .c-select-left i{color:#a3a3a3;}
+    .c-chevron{font-size:18px;color:#a3a3a3;transition:transform 0.2s;}
+    .c-select.open .c-chevron{transform:rotate(180deg);}
+    .c-select-menu{position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:200;background:#fff;border:1.5px solid #e5e5e5;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,0.1);padding:5px;opacity:0;visibility:hidden;transform:translateY(6px);transition:opacity 0.18s ease,transform 0.18s ease,visibility 0.18s;}
+    .dark .c-select-menu{background:#1c1c1c;border-color:#404040;box-shadow:0 8px 30px rgba(0,0,0,0.5);}
+    .c-select.open .c-select-menu{opacity:1;visibility:visible;transform:translateY(0);}
+    .c-opt{display:flex;align-items:center;gap:10px;padding:9px 12px;font-size:13px;border-radius:9px;cursor:pointer;color:#404040;transition:background 0.15s,color 0.15s;}
+    .dark .c-opt{color:#d4d4d4;}
+    .c-opt:hover{background:#f5f5f5;color:#171717;}
+    .dark .c-opt:hover{background:#2a2a2a;color:#fff;}
+    .c-opt.selected{background:#f0f0f0;color:#171717;font-weight:500;}
+    .dark .c-opt.selected{background:#2a2a2a;color:#fff;}
+    .c-opt i{font-size:16px;color:#737373;width:18px;text-align:center;flex-shrink:0;}
+    .dark .c-opt i{color:#a3a3a3;}
+    .c-opt.selected i{color:#171717;}
+    .dark .c-opt.selected i{color:#fff;}
+
+    /* ── Custom Date Picker ── */
+    .c-datepicker{position:relative;}
+    .c-date-trigger{width:100%;display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:13px;font-family:inherit;cursor:pointer;border-radius:12px;border:1.5px solid #e5e5e5;background:#fafafa;color:#a3a3a3;transition:border-color 0.2s;}
+    .dark .c-date-trigger{border-color:#404040;background:#262626;color:#525252;}
+    .c-date-trigger.has-value{color:#171717;}
+    .dark .c-date-trigger.has-value{color:#f5f5f5;}
+    .c-date-trigger:hover{border-color:#a3a3a3;}
+    .dark .c-date-trigger:hover{border-color:#737373;}
+    .c-datepicker.open .c-date-trigger{border-color:#171717;}
+    .dark .c-datepicker.open .c-date-trigger{border-color:#e5e5e5;}
+    .c-date-trigger i{font-size:16px;color:#a3a3a3;flex-shrink:0;}
+    .dark .c-date-trigger i{color:#525252;}
+    .c-cal{position:absolute;top:calc(100% + 6px);left:0;z-index:200;background:#fff;border:1.5px solid #e5e5e5;border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,0.12);padding:14px;width:296px;opacity:0;visibility:hidden;transform:translateY(6px);transition:opacity 0.18s ease,transform 0.18s ease,visibility 0.18s;}
+    .dark .c-cal{background:#1c1c1c;border-color:#404040;box-shadow:0 12px 40px rgba(0,0,0,0.5);}
+    .c-datepicker.open .c-cal{opacity:1;visibility:visible;transform:translateY(0);}
+    /* Cal header */
+    .c-cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:4px;}
+    .c-cal-hbtn{display:flex;align-items:center;gap:4px;padding:4px 8px;border-radius:8px;border:none;background:transparent;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;transition:background 0.15s,color 0.15s;}
+    .c-cal-hbtn:hover{background:#f0f0f0;}
+    .dark .c-cal-hbtn{color:#f5f5f5;}
+    .dark .c-cal-hbtn:hover{background:#2a2a2a;}
+    .c-cal-hbtn i{font-size:13px;color:#737373;}
+    .dark .c-cal-hbtn i{color:#a3a3a3;}
+    .c-cal-nav{width:28px;height:28px;border-radius:8px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:#737373;transition:background 0.15s,color 0.15s;flex-shrink:0;}
+    .c-cal-nav:hover{background:#f5f5f5;color:#171717;}
+    .dark .c-cal-nav{color:#737373;}
+    .dark .c-cal-nav:hover{background:#2a2a2a;color:#fff;}
+    /* Day grid */
+    .c-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+    .c-cal-dow{font-size:10px;font-weight:600;text-align:center;padding:4px 0;color:#a3a3a3;text-transform:uppercase;letter-spacing:0.04em;}
+    .c-cal-day{width:34px;height:34px;border-radius:8px;border:none;background:transparent;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:inherit;color:#404040;transition:background 0.15s,color 0.15s;}
+    .dark .c-cal-day{color:#d4d4d4;}
+    .c-cal-day:hover:not(.empty):not(.disabled){background:#f0f0f0;color:#171717;}
+    .dark .c-cal-day:hover:not(.empty):not(.disabled){background:#2a2a2a;color:#fff;}
+    .c-cal-day.today{font-weight:700;color:#171717;position:relative;}
+    .dark .c-cal-day.today{color:#fff;}
+    .c-cal-day.today::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:currentColor;}
+    .c-cal-day.selected{background:#171717 !important;color:#fff !important;font-weight:600;}
+    .dark .c-cal-day.selected{background:#fff !important;color:#171717 !important;}
+    .c-cal-day.disabled{color:#d4d4d4;cursor:not-allowed;pointer-events:none;}
+    .dark .c-cal-day.disabled{color:#404040;}
+    .c-cal-day.empty{cursor:default;pointer-events:none;}
+    /* Today btn + footer */
+    .c-cal-footer{margin-top:10px;padding-top:10px;border-top:1px solid #f0f0f0;display:flex;gap:6px;}
+    .dark .c-cal-footer{border-color:#2a2a2a;}
+    .c-today-btn{flex:1;padding:7px;font-size:12px;font-weight:500;font-family:inherit;border-radius:9px;border:1.5px solid #e5e5e5;background:transparent;cursor:pointer;color:#404040;transition:all 0.15s;}
+    .c-today-btn:hover{border-color:#171717;background:#171717;color:#fff;}
+    .dark .c-today-btn{border-color:#404040;color:#d4d4d4;}
+    .dark .c-today-btn:hover{border-color:#fff;background:#fff;color:#171717;}
+    .c-clear-btn{padding:7px 12px;font-size:12px;font-family:inherit;border-radius:9px;border:none;background:transparent;cursor:pointer;color:#a3a3a3;transition:color 0.15s;}
+    .c-clear-btn:hover{color:#ef4444;}
+    /* Month picker grid */
+    .c-month-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:4px 0;}
+    .c-month-btn{padding:8px 4px;font-size:12px;font-weight:500;font-family:inherit;border-radius:9px;border:none;background:transparent;cursor:pointer;color:#404040;transition:background 0.15s,color 0.15s;text-align:center;}
+    .dark .c-month-btn{color:#d4d4d4;}
+    .c-month-btn:hover{background:#f0f0f0;color:#171717;}
+    .dark .c-month-btn:hover{background:#2a2a2a;color:#fff;}
+    .c-month-btn.cur-month{background:#171717;color:#fff;font-weight:600;}
+    .dark .c-month-btn.cur-month{background:#fff;color:#171717;}
+    /* Year picker */
+    .c-year-wrap{display:flex;flex-direction:column;gap:8px;padding:4px 0;}
+    .c-year-inp{width:100%;padding:8px 12px;font-size:14px;font-family:inherit;border-radius:10px;border:1.5px solid #e5e5e5;background:#fafafa;text-align:center;font-weight:600;outline:none;transition:border-color 0.2s;}
+    .dark .c-year-inp{border-color:#404040;background:#262626;color:#f5f5f5;}
+    .c-year-inp:focus{border-color:#171717;}
+    .dark .c-year-inp:focus{border-color:#e5e5e5;}
+    .c-year-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;}
+    .c-year-btn{padding:7px 4px;font-size:12px;font-family:inherit;border-radius:8px;border:none;background:transparent;cursor:pointer;color:#404040;transition:background 0.15s,color 0.15s;text-align:center;}
+    .dark .c-year-btn{color:#d4d4d4;}
+    .c-year-btn:hover{background:#f0f0f0;color:#171717;}
+    .dark .c-year-btn:hover{background:#2a2a2a;color:#fff;}
+    .c-year-btn.cur-year{background:#171717;color:#fff;font-weight:600;}
+    .dark .c-year-btn.cur-year{background:#fff;color:#171717;}
+
+    /* Main image gallery */
+    .gallery-main { width: 100%; height: 380px; border-radius: 1.5rem; overflow: hidden; position: relative; }
+    .gallery-main img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.5s ease !important; }
+    .thumb-img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; border-radius: 0.75rem; transition: opacity 0.2s !important; }
+    .thumb-wrap { border-radius: 0.75rem; overflow: hidden; border: 2.5px solid transparent; cursor: pointer; transition: border-color 0.2s !important; }
+    .thumb-wrap.active { border-color: #171717; }
+    .dark .thumb-wrap.active { border-color: #fff; }
+
+    /* Badge */
+    .badge-available { background: #dcfce7; color: #16a34a; }
+    .dark .badge-available { background: rgba(22,163,74,0.15); color: #4ade80; }
+
+    /* Amenity chip */
+    .amenity-chip { display: flex; align-items: center; gap: 6px; font-size: 12px; padding: 6px 14px; border-radius: 50px; background: #f5f5f5; color: #404040; }
+    .dark .amenity-chip { background: #262626; color: #d4d4d4; }
+
+    /* Booking modal */
+    #bookModal { display: none; }
+    #bookModal.open { display: flex; }
+  </style>
+</head>
+<body class="bg-neutral-100 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100 font-poppins">
+
+  <!-- ══ NAVBAR ══ -->
+  <nav class="nav-blur fixed top-0 left-0 right-0 z-50 bg-neutral-100/85 dark:bg-neutral-950/85 border-b border-neutral-200 dark:border-neutral-800">
+    <div class="h-14 md:h-16 flex items-center justify-between px-4 md:px-10">
+      <a href="index.html" class="w-11 h-11"><img src="ams-logo.png" alt="Logo" class="w-full h-full object-contain" /></a>
+      <ul class="hidden md:flex items-center gap-1 list-none m-0 p-0">
+        <li><a href="index.html" class="px-4 py-2 text-sm font-medium rounded-lg text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-white block">Home</a></li>
+        <li class="relative" data-dropdown>
+          <button class="dropdown-trigger flex items-center gap-1 px-4 py-2 text-sm font-semibold text-neutral-900 dark:text-white bg-neutral-200 dark:bg-neutral-800 rounded-lg cursor-pointer border-none bg-transparent font-poppins">
+            My Rooms <i class="uil uil-angle-down text-base dropdown-chevron" style="transition:transform 0.2s;"></i>
+          </button>
+          <div class="dropdown-menu absolute top-full left-0 mt-2 w-44 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-xl shadow-xl p-1.5 z-50 opacity-0 invisible pointer-events-none" style="transition:opacity 0.18s ease,transform 0.18s ease;transform:translateY(6px);">
+            <a href="all-rooms.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 font-semibold rounded-lg"><i class="uil uil-apps"></i> All Rooms</a>
+            <a href="booked.html"    class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-calendar-alt"></i> Booked</a>
+            <a href="favorites.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-heart"></i> Favorites</a>
+          </div>
+        </li>
+        <li class="relative" data-dropdown>
+          <button class="dropdown-trigger flex items-center gap-1 px-4 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800 rounded-lg cursor-pointer border-none bg-transparent font-poppins">
+            Account <i class="uil uil-angle-down text-base dropdown-chevron" style="transition:transform 0.2s;"></i>
+          </button>
+          <div class="dropdown-menu absolute top-full left-0 mt-2 w-48 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-xl shadow-xl p-1.5 z-50 opacity-0 invisible pointer-events-none" style="transition:opacity 0.18s ease,transform 0.18s ease;transform:translateY(6px);">
+            <a href="billing-history.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-receipt"></i> Billing History</a>
+            <a href="payment.html"         class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-credit-card"></i> Payment</a>
+            <a href="complaint.html"       class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-comment-exclamation"></i> Complaint</a>
+          </div>
+        </li>
+      </ul>
+      <div class="flex items-center gap-2">
+        <button id="darkToggle" class="w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-full border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 shadow-sm cursor-pointer">
+          <i id="themeIcon" class="uil uil-sun text-base"></i>
+        </button>
+        <div class="relative" id="avatarDropdown">
+          <div id="avatarTrigger" class="w-8 h-8 md:w-9 md:h-9 rounded-full overflow-hidden border-2 border-neutral-200 dark:border-neutral-700 cursor-pointer">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&q=80" alt="Avatar" class="w-full h-full object-cover" />
+          </div>
+          <div id="avatarMenu" class="absolute top-full right-0 mt-2 w-44 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-xl shadow-xl p-1.5 z-50 opacity-0 invisible pointer-events-none" style="transition:opacity 0.18s ease,transform 0.18s ease;transform:translateY(6px);">
+            <a href="profile.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-user"></i> Profile</a>
+            <a href="settings.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-setting"></i> Settings</a>
+            <div class="my-1 border-t border-neutral-100 dark:border-neutral-800"></div>
+            <a href="#" class="flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg"><i class="uil uil-sign-out-alt"></i> Logout</a>
+          </div>
+        </div>
+        <button id="menuToggle" class="md:hidden flex items-center justify-center w-8 h-8 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer border-none bg-transparent text-neutral-700 dark:text-neutral-300">
+          <i id="menuIcon" class="uil uil-bars text-xl"></i>
+        </button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="md:hidden border-t border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-950">
+      <div class="px-4 py-3 flex flex-col gap-1">
+        <a href="index.html" class="px-4 py-2 text-sm font-medium rounded-lg text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-white block">Home</a>
+        <div>
+          <button onclick="toggleMobileSection('myRooms')" class="w-full flex items-center justify-between px-3 py-2.5 text-sm font-semibold rounded-lg cursor-pointer border-none bg-transparent font-poppins text-left hover:bg-neutral-100 dark:hover:bg-neutral-800">My Rooms <i class="uil uil-angle-down text-lg" id="myRoomsIcon"></i></button>
+          <div id="myRooms" class="hidden flex-col pl-3 gap-1">
+            <a href="all-rooms.html" class="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-neutral-900 dark:text-white rounded-lg"><i class="uil uil-apps"></i> All Rooms</a>
+            <a href="booked.html"    class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg"><i class="uil uil-calendar-alt"></i> Booked</a>
+            <a href="favorites.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg"><i class="uil uil-heart"></i> Favorites</a>
+          </div>
+        </div>
+        <div>
+          <button onclick="toggleMobileSection('accountMenu')" class="w-full flex items-center justify-between px-3 py-2.5 text-sm text-neutral-500 dark:text-neutral-400 rounded-lg cursor-pointer border-none bg-transparent font-poppins text-left hover:bg-neutral-100 dark:hover:bg-neutral-800">Account <i class="uil uil-angle-down text-lg" id="accountMenuIcon"></i></button>
+          <div id="accountMenu" class="hidden flex-col pl-3 gap-1">
+            <a href="billing-history.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 rounded-lg"><i class="uil uil-receipt"></i> Billing History</a>
+            <a href="payment.html"         class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 rounded-lg"><i class="uil uil-credit-card"></i> Payment</a>
+            <a href="complaint.html"       class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 rounded-lg"><i class="uil uil-comment-exclamation"></i> Complaint</a>
+          </div>
+        </div>
+        <div class="border-t border-neutral-200 dark:border-neutral-700 mt-1 pt-2">
+          <a href="#" class="flex items-center gap-2 px-3 py-2.5 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800"><i class="uil uil-user"></i> Profile</a>
+          <a href="#" class="flex items-center gap-2 px-3 py-2.5 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800"><i class="uil uil-setting"></i> Settings</a>
+          <a href="#" class="flex items-center gap-2 px-3 py-2.5 text-sm text-red-500 hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40"><i class="uil uil-sign-out-alt"></i> Logout</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ══ PAGE ══ -->
+  <main class="max-w-5xl mx-auto px-4 md:px-8 pt-24 pb-16">
+
+    <!-- Back link -->
+    <a href="all-rooms.html" class="inline-flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white mb-6 reveal">
+      <i class="uil uil-arrow-left text-base"></i> Back to All Rooms
+    </a>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 reveal">
+
+      <!-- Left: gallery + details -->
+      <div class="lg:col-span-2">
+        <!-- Main image -->
+        <div class="gallery-main mb-3" id="galleryMain">
+          <img id="mainImg" src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=90" alt="Room main" class="w-full h-full object-cover" />
+        </div>
+        <!-- Thumbnails -->
+        <div class="grid grid-cols-3 gap-2 mb-6">
+          <div class="thumb-wrap active h-20" onclick="switchThumb(this,'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=90')">
+            <img class="thumb-img" src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=300&q=80" alt="" />
+          </div>
+          <div class="thumb-wrap h-20" onclick="switchThumb(this,'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=900&q=90')">
+            <img class="thumb-img" src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=300&q=80" alt="" />
+          </div>
+          <div class="thumb-wrap h-20" onclick="switchThumb(this,'https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=900&q=90')">
+            <img class="thumb-img" src="https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=300&q=80" alt="" />
+          </div>
+        </div>
+
+        <!-- Room info -->
+        <div class="mb-6">
+          <div class="flex items-start justify-between gap-3 mb-3">
+            <div>
+              <h1 id="roomTitle" class="text-2xl font-semibold">Deluxe Studio</h1>
+              <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-0.5">Room 101 · 2nd Floor · 18 Rosal Street, Novaliches, QC</p>
+            </div>
+            <span class="badge-available text-xs font-medium px-3 py-1.5 rounded-full shrink-0">Available</span>
+          </div>
+          <div class="flex flex-wrap gap-2 mb-5">
+            <span class="amenity-chip"><i class="uil uil-expand-arrows-alt"></i> 24 sqm</span>
+            <span class="amenity-chip"><i class="uil uil-wifi"></i> High-Speed Wi-Fi</span>
+            <span class="amenity-chip"><i class="uil uil-snowflake"></i> Air Conditioning</span>
+            <span class="amenity-chip"><i class="uil uil-bath"></i> Private Bathroom</span>
+            <span class="amenity-chip"><i class="uil uil-utensils-alt"></i> Shared Kitchen</span>
+            <span class="amenity-chip"><i class="uil uil-bolt"></i> All Bills Included</span>
+            <span class="amenity-chip"><i class="uil uil-shield-check"></i> CCTV Security</span>
+            <span class="amenity-chip"><i class="uil uil-parking-square"></i> Parking Available</span>
+          </div>
+          <h2 class="text-sm font-semibold mb-2">About this Room</h2>
+          <p class="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed">
+            The Deluxe Studio is a bright, tastefully furnished space designed for comfort and productivity. The room features large windows that let in plenty of natural light, a cozy queen-sized bed, a dedicated study area, and ample built-in storage. Perfect for students, young professionals, or anyone looking for a quiet, well-maintained space to call home.
+          </p>
+        </div>
+
+        <!-- House rules -->
+        <div class="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-100 dark:border-neutral-800 p-5">
+          <h2 class="text-sm font-semibold mb-3 flex items-center gap-2"><i class="uil uil-list-ul text-base text-neutral-400"></i> House Rules</h2>
+          <ul class="text-sm text-neutral-500 dark:text-neutral-400 space-y-2">
+            <li class="flex items-center gap-2"><i class="uil uil-check-circle text-green-500"></i> No smoking inside the premises</li>
+            <li class="flex items-center gap-2"><i class="uil uil-check-circle text-green-500"></i> Quiet hours: 10 PM – 7 AM</li>
+            <li class="flex items-center gap-2"><i class="uil uil-check-circle text-green-500"></i> No pets allowed</li>
+            <li class="flex items-center gap-2"><i class="uil uil-check-circle text-green-500"></i> Visitors must sign in at the lobby</li>
+            <li class="flex items-center gap-2"><i class="uil uil-check-circle text-green-500"></i> Rent due on or before the 5th of every month</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Right: booking card -->
+      <div class="lg:col-span-1">
+        <div class="sticky top-20">
+          <div class="bg-white dark:bg-neutral-900 rounded-3xl border border-neutral-100 dark:border-neutral-800 p-6 shadow-sm">
+            <p class="text-xs text-neutral-400 mb-1">Monthly Rate</p>
+            <p class="text-3xl font-semibold mb-1">₱3,500</p>
+            <p class="text-xs text-neutral-400 mb-5">All bills included · Min. 3 months</p>
+
+            <!-- Move-in date -->
+            <div class="mb-4">
+              <label class="text-xs font-medium text-neutral-600 dark:text-neutral-400 block mb-1.5">Preferred Move-in Date</label>
+              <div class="c-datepicker" id="dp-movein">
+                <div class="c-date-trigger" id="dp-movein-trigger" data-placeholder="Select a date" onclick="toggleDatepicker('dp-movein')">
+                  <i class="uil uil-calendar-alt"></i>
+                  <span id="dp-movein-label">Select a date</span>
+                </div>
+                <div class="c-cal" id="dp-movein-cal"></div>
+              </div>
+            </div>
+
+            <!-- Duration -->
+            <div class="mb-5">
+              <label class="text-xs font-medium text-neutral-600 dark:text-neutral-400 block mb-1.5">Lease Duration</label>
+              <div class="c-select" id="sel-duration">
+                <div class="c-select-trigger" onclick="toggleSelect('sel-duration')">
+                  <div class="c-select-left">
+                    <i class="uil uil-clock" id="sel-duration-icon"></i>
+                    <span id="sel-duration-label">3 months</span>
+                  </div>
+                  <i class="uil uil-angle-down c-chevron"></i>
+                </div>
+                <div class="c-select-menu">
+                  <div class="c-opt selected" onclick="selectOpt('sel-duration','3 months','uil-clock',this)">
+                    <i class="uil uil-clock"></i> 3 months
+                  </div>
+                  <div class="c-opt" onclick="selectOpt('sel-duration','6 months','uil-clock',this)">
+                    <i class="uil uil-clock"></i> 6 months
+                  </div>
+                  <div class="c-opt" onclick="selectOpt('sel-duration','1 year','uil-calendar-alt',this)">
+                    <i class="uil uil-calendar-alt"></i> 1 year
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Price breakdown -->
+            <div class="border-t border-neutral-100 dark:border-neutral-800 pt-4 mb-5 space-y-2">
+              <div class="flex justify-between text-sm">
+                <span class="text-neutral-500 dark:text-neutral-400">₱3,500 × 3 months</span>
+                <span class="font-medium">₱10,500</span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-neutral-500 dark:text-neutral-400">Security deposit</span>
+                <span class="font-medium">₱3,500</span>
+              </div>
+              <div class="flex justify-between text-sm font-semibold pt-2 border-t border-neutral-100 dark:border-neutral-800">
+                <span>Total due</span>
+                <span>₱14,000</span>
+              </div>
+            </div>
+
+            <button onclick="document.getElementById('bookModal').classList.add('open')"
+              class="w-full bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 font-medium text-sm py-3 rounded-2xl hover:opacity-85 cursor-pointer border-none font-poppins mb-2">
+              Book this Room
+            </button>
+            <button onclick="toggleFavorite(this)"
+              class="w-full flex items-center justify-center gap-2 border border-neutral-200 dark:border-neutral-700 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 font-medium text-sm py-3 rounded-2xl cursor-pointer bg-transparent font-poppins" id="favBtn">
+              <i class="uil uil-heart text-base"></i> Save to Favorites
+            </button>
+
+            <!-- Contact -->
+            <div class="mt-5 pt-4 border-t border-neutral-100 dark:border-neutral-800">
+              <p class="text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-2">Questions? Contact the manager</p>
+              <a href="tel:+639123456789" class="flex items-center gap-2 text-sm font-medium text-neutral-900 dark:text-white hover:text-neutral-600 dark:hover:text-neutral-300">
+                <i class="uil uil-phone text-base"></i> +63 912 345 6789
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /grid -->
+  </main>
+
+  <!-- ══ Booking Confirmation Modal ══ -->
+  <div id="bookModal" class="fixed inset-0 z-50 items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+    <div class="bg-white dark:bg-neutral-900 rounded-3xl p-7 max-w-sm w-full shadow-2xl">
+      <div class="flex items-center justify-between mb-5">
+        <h3 class="font-semibold text-base">Confirm Booking</h3>
+        <button onclick="document.getElementById('bookModal').classList.remove('open')" class="w-7 h-7 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center cursor-pointer border-none text-neutral-500 hover:text-neutral-900 dark:hover:text-white">
+          <i class="uil uil-times text-sm"></i>
+        </button>
+      </div>
+      <div class="bg-neutral-50 dark:bg-neutral-800 rounded-2xl p-4 mb-5 text-sm space-y-2">
+        <div class="flex justify-between"><span class="text-neutral-500 dark:text-neutral-400">Room</span><span class="font-medium">Deluxe Studio</span></div>
+        <div class="flex justify-between"><span class="text-neutral-500 dark:text-neutral-400">Move-in</span><span class="font-medium">June 1, 2025</span></div>
+        <div class="flex justify-between"><span class="text-neutral-500 dark:text-neutral-400">Duration</span><span class="font-medium">3 months</span></div>
+        <div class="flex justify-between pt-2 border-t border-neutral-200 dark:border-neutral-700"><span class="font-semibold">Total due</span><span class="font-semibold">₱14,000</span></div>
+      </div>
+      <p class="text-xs text-neutral-500 dark:text-neutral-400 mb-5">By confirming, you agree to the house rules and lease terms. A property manager will contact you within 24 hours.</p>
+      <button onclick="confirmBooking()" class="w-full bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 font-medium text-sm py-3 rounded-2xl hover:opacity-85 cursor-pointer border-none font-poppins mb-2">Confirm & Book</button>
+      <button onclick="document.getElementById('bookModal').classList.remove('open')" class="w-full text-sm text-neutral-500 py-2 cursor-pointer border-none bg-transparent font-poppins hover:text-neutral-900 dark:hover:text-white">Cancel</button>
+    </div>
+  </div>
+
+  <!-- ══ Success Toast ══ -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-sm font-medium px-5 py-3 rounded-2xl shadow-xl z-50 opacity-0 pointer-events-none" style="transition:opacity 0.3s;">
+    <i class="uil uil-check-circle mr-2 text-green-400 dark:text-green-600"></i><span id="toastMsg">Booked!</span>
+  </div>
+
+  <script>
+    // Dark mode
+    const html = document.documentElement;
+    const themeIcon = document.getElementById('themeIcon');
+    function applyTheme(dark) {
+      dark ? html.classList.add('dark') : html.classList.remove('dark');
+      themeIcon.className = dark ? 'uil uil-moon text-base' : 'uil uil-sun text-base';
+    }
+    const saved = localStorage.getItem('theme');
+    applyTheme(saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches));
+    document.getElementById('darkToggle').addEventListener('click', () => {
+      const isDark = html.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'light' : 'dark');
+      applyTheme(!isDark);
+    });
+
+    // Mobile menu
+    let menuOpen = false;
+    document.getElementById('menuToggle').addEventListener('click', () => {
+      menuOpen = !menuOpen;
+      document.getElementById('mobileMenu').classList.toggle('open', menuOpen);
+      document.getElementById('menuIcon').className = menuOpen ? 'uil uil-times text-xl' : 'uil uil-bars text-xl';
+    });
+    function toggleMobileSection(id) {
+      const el = document.getElementById(id), icon = document.getElementById(id + 'Icon');
+      const isOpen = !el.classList.contains('hidden');
+      el.classList.toggle('hidden', isOpen); el.classList.toggle('flex', !isOpen);
+      if (icon) icon.className = isOpen ? 'uil uil-angle-down text-lg' : 'uil uil-angle-up text-lg';
+    }
+
+    // Avatar
+    const avatarTrigger = document.getElementById('avatarTrigger');
+    const avatarMenu    = document.getElementById('avatarMenu');
+    const avatarWrapper = document.getElementById('avatarDropdown');
+    let avatarOpen = false;
+    const openAvatar  = () => { avatarOpen=true;  avatarMenu.style.cssText='transform:translateY(0);opacity:1;visibility:visible;'; avatarMenu.classList.remove('pointer-events-none'); };
+    const closeAvatar = () => { avatarOpen=false; avatarMenu.style.cssText='transform:translateY(6px);opacity:0;visibility:hidden;'; avatarMenu.classList.add('pointer-events-none'); };
+    avatarTrigger.addEventListener('click', e => { e.stopPropagation(); avatarOpen ? closeAvatar() : openAvatar(); });
+    document.addEventListener('click', e => { if (!avatarWrapper.contains(e.target)) closeAvatar(); });
+
+    // Desktop dropdowns
+    document.querySelectorAll('[data-dropdown]').forEach(item => {
+      const menu = item.querySelector('.dropdown-menu'), chevron = item.querySelector('.dropdown-chevron');
+      let t = null;
+      const open  = () => { clearTimeout(t); menu.style.cssText='transform:translateY(0);opacity:1;visibility:visible;'; menu.classList.remove('pointer-events-none'); if(chevron) chevron.style.transform='rotate(180deg)'; };
+      const close = () => { t=setTimeout(()=>{ menu.style.cssText='transform:translateY(6px);opacity:0;visibility:hidden;'; menu.classList.add('pointer-events-none'); if(chevron) chevron.style.transform='rotate(0deg)'; },120); };
+      item.querySelector('.dropdown-trigger').addEventListener('mouseenter', open);
+      item.querySelector('.dropdown-trigger').addEventListener('mouseleave', close);
+      menu.addEventListener('mouseenter', open); menu.addEventListener('mouseleave', close);
+      item.querySelector('.dropdown-trigger').addEventListener('click', () => menu.style.visibility==='visible' ? close() : open());
+      document.addEventListener('click', e => { if (!item.contains(e.target)) close(); });
+    });
+
+    // Gallery thumbnail switch
+    function switchThumb(wrap, src) {
+      document.querySelectorAll('.thumb-wrap').forEach(w => w.classList.remove('active'));
+      wrap.classList.add('active');
+      document.getElementById('mainImg').src = src;
+    }
+
+    // Favorites toggle
+    let isFav = false;
+    function toggleFavorite(btn) {
+      isFav = !isFav;
+      btn.innerHTML = isFav
+        ? '<i class="uil uil-heart text-base text-red-500"></i> Saved to Favorites'
+        : '<i class="uil uil-heart text-base"></i> Save to Favorites';
+      showToast(isFav ? 'Added to favorites!' : 'Removed from favorites');
+    }
+
+    // Booking confirm
+    function confirmBooking() {
+      document.getElementById('bookModal').classList.remove('open');
+      showToast('Booking confirmed! Manager will contact you shortly.');
+    }
+
+    // Toast
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      t.style.opacity = '1'; t.classList.remove('pointer-events-none');
+      setTimeout(() => { t.style.opacity = '0'; t.classList.add('pointer-events-none'); }, 3000);
+    }
+
+    // ── Custom Select ──
+    function toggleSelect(id) {
+      const el = document.getElementById(id);
+      const isOpen = el.classList.contains('open');
+      document.querySelectorAll('.c-select.open').forEach(s => s.classList.remove('open'));
+      if (!isOpen) el.classList.add('open');
+    }
+    function selectOpt(selectId, label, icon, optEl) {
+      document.getElementById(selectId + '-label').textContent = label;
+      document.getElementById(selectId + '-icon').className = 'uil ' + icon;
+      document.querySelectorAll('#' + selectId + ' .c-opt').forEach(o => o.classList.remove('selected'));
+      optEl.classList.add('selected');
+      document.getElementById(selectId).classList.remove('open');
+    }
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.c-select')) document.querySelectorAll('.c-select.open').forEach(s => s.classList.remove('open'));
+    });
+
+    // ── Custom Datepicker ──
+    const dpState = {};
+    const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const DAYS   = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+    function initDatepicker(id, minToday = false) {
+      const now = new Date();
+      dpState[id] = { year: now.getFullYear(), month: now.getMonth(), selected: null, minToday, view: 'day' };
+      renderCal(id);
+    }
+
+    function renderCal(id) {
+      const s   = dpState[id];
+      const cal = document.getElementById(id + '-cal');
+      if (s.view === 'month') { renderMonthPicker(id, cal); return; }
+      if (s.view === 'year')  { renderYearPicker(id, cal); return; }
+
+      const y = s.year, m = s.month;
+      const today    = new Date(); today.setHours(0,0,0,0);
+      const firstDay = new Date(y, m, 1).getDay();
+      const daysInM  = new Date(y, m + 1, 0).getDate();
+
+      let html = `
+        <div class="c-cal-head">
+          <button class="c-cal-nav" onclick="calNav('${id}',-1)"><i class="uil uil-angle-left"></i></button>
+          <div style="display:flex;gap:2px;">
+            <button class="c-cal-hbtn" onclick="dpSetView('${id}','month')">${MONTHS[m]}<i class="uil uil-angle-down"></i></button>
+            <button class="c-cal-hbtn" onclick="dpSetView('${id}','year')">${y}<i class="uil uil-angle-down"></i></button>
+          </div>
+          <button class="c-cal-nav" onclick="calNav('${id}',1)"><i class="uil uil-angle-right"></i></button>
+        </div>
+        <div class="c-cal-grid">`;
+      DAYS.forEach(d => { html += `<div class="c-cal-dow">${d}</div>`; });
+      for (let i = 0; i < firstDay; i++) html += `<div class="c-cal-day empty"></div>`;
+      for (let d = 1; d <= daysInM; d++) {
+        const date = new Date(y, m, d); date.setHours(0,0,0,0);
+        const isToday    = date.getTime() === today.getTime();
+        const isSelected = s.selected && date.getTime() === s.selected.getTime();
+        const isDisabled = s.minToday && date < today;
+        let cls = 'c-cal-day';
+        if (isToday)    cls += ' today';
+        if (isSelected) cls += ' selected';
+        if (isDisabled) cls += ' disabled';
+        html += `<button class="${cls}" onclick="selectDay('${id}',${y},${m},${d})">${d}</button>`;
+      }
+      html += `</div>
+        <div class="c-cal-footer">
+          <button class="c-today-btn" onclick="goToday('${id}')"><i class="uil uil-calendar-alt" style="margin-right:4px;"></i>Today</button>
+          <button class="c-clear-btn" onclick="clearDate('${id}')">Clear</button>
+        </div>`;
+      cal.innerHTML = html;
+    }
+
+    function renderMonthPicker(id, cal) {
+      const s = dpState[id];
+      let html = `
+        <div class="c-cal-head">
+          <button class="c-cal-nav" onclick="calYearNav('${id}',-1)"><i class="uil uil-angle-left"></i></button>
+          <button class="c-cal-hbtn" onclick="dpSetView('${id}','year')">${s.year}<i class="uil uil-angle-down"></i></button>
+          <button class="c-cal-nav" onclick="calYearNav('${id}',1)"><i class="uil uil-angle-right"></i></button>
+        </div>
+        <div class="c-month-grid">`;
+      MONTHS_SHORT.forEach((mn, i) => {
+        const isCur = i === s.month;
+        html += `<button class="c-month-btn${isCur?' cur-month':''}" onclick="selectMonth('${id}',${i})">${mn}</button>`;
+      });
+      html += `</div>
+        <div class="c-cal-footer">
+          <button class="c-today-btn" onclick="goToday('${id}')"><i class="uil uil-calendar-alt" style="margin-right:4px;"></i>Today</button>
+          <button class="c-clear-btn" onclick="clearDate('${id}')">Clear</button>
+        </div>`;
+      cal.innerHTML = html;
+    }
+
+    function renderYearPicker(id, cal) {
+      const s    = dpState[id];
+      const base = Math.floor(s.year / 12) * 12;
+      let html = `
+        <div class="c-cal-head">
+          <button class="c-cal-nav" onclick="calYearPageNav('${id}',-12)"><i class="uil uil-angle-left"></i></button>
+          <span style="font-size:13px;font-weight:600;">${base} – ${base+11}</span>
+          <button class="c-cal-nav" onclick="calYearPageNav('${id}',12)"><i class="uil uil-angle-right"></i></button>
+        </div>
+        <div style="margin-bottom:8px;">
+          <input class="c-year-inp" type="number" value="${s.year}" min="1900" max="2100"
+            oninput="manualYear('${id}',this.value)" onkeydown="if(event.key==='Enter')manualYearConfirm('${id}',this.value)" placeholder="Type year…" />
+        </div>
+        <div class="c-year-grid">`;
+      for (let y = base; y < base + 12; y++) {
+        const isCur = y === s.year;
+        html += `<button class="c-year-btn${isCur?' cur-year':''}" onclick="selectYear('${id}',${y})">${y}</button>`;
+      }
+      html += `</div>
+        <div class="c-cal-footer">
+          <button class="c-today-btn" onclick="goToday('${id}')"><i class="uil uil-calendar-alt" style="margin-right:4px;"></i>Today</button>
+          <button class="c-clear-btn" onclick="clearDate('${id}')">Clear</button>
+        </div>`;
+      cal.innerHTML = html;
+    }
+
+    function dpSetView(id, view) { dpState[id].view = view; renderCal(id); }
+
+    function calNav(id, dir) {
+      const s = dpState[id]; s.month += dir;
+      if (s.month > 11) { s.month = 0; s.year++; }
+      if (s.month < 0)  { s.month = 11; s.year--; }
+      renderCal(id);
+    }
+    function calYearNav(id, dir)     { dpState[id].year += dir; renderCal(id); }
+    function calYearPageNav(id, dir) { dpState[id].year += dir; renderCal(id); }
+
+    function selectMonth(id, m) { dpState[id].month = m; dpState[id].view = 'day'; renderCal(id); }
+    function selectYear(id, y)  { dpState[id].year = y; dpState[id].view = 'day'; renderCal(id); }
+    function manualYear(id, val) {
+      const y = parseInt(val);
+      if (!isNaN(y) && y >= 1900 && y <= 2100) { dpState[id].year = y; renderCal(id); }
+    }
+    function manualYearConfirm(id, val) { selectYear(id, parseInt(val)); }
+
+    function selectDay(id, y, m, d) {
+      const s    = dpState[id];
+      const date = new Date(y, m, d);
+      s.selected = date; s.year = y; s.month = m; s.view = 'day';
+      const label = date.toLocaleDateString('en-PH', { month:'long', day:'numeric', year:'numeric' });
+      document.getElementById(id + '-label').textContent = label;
+      document.getElementById(id + '-trigger').classList.add('has-value');
+      renderCal(id);
+      setTimeout(() => document.getElementById(id).classList.remove('open'), 200);
+    }
+
+    function goToday(id) {
+      const now = new Date();
+      dpState[id].year = now.getFullYear();
+      dpState[id].month = now.getMonth();
+      dpState[id].view = 'day';
+      selectDay(id, now.getFullYear(), now.getMonth(), now.getDate());
+    }
+
+    function clearDate(id) {
+      dpState[id].selected = null;
+      const trigger = document.getElementById(id + '-trigger');
+      document.getElementById(id + '-label').textContent = trigger.dataset.placeholder || 'Select a date';
+      trigger.classList.remove('has-value');
+      renderCal(id);
+    }
+
+    function toggleDatepicker(id) {
+      // Lazy-init in case initDatepicker() hasn't been called yet
+      if (!dpState[id]) initDatepicker(id, true);
+      const el     = document.getElementById(id);
+      const isOpen = el.classList.contains('open');
+      document.querySelectorAll('.c-datepicker.open').forEach(dp => dp.classList.remove('open'));
+      if (!isOpen) { dpState[id].view = 'day'; el.classList.add('open'); }
+    }
+    document.addEventListener('click', e => {
+      // If the clicked element was removed from the DOM (e.g. by renderCal replacing innerHTML),
+      // document.contains returns false — in that case we must NOT close the picker.
+      if (!document.contains(e.target)) return;
+      if (!e.target.closest('.c-datepicker')) {
+        document.querySelectorAll('.c-datepicker.open').forEach(dp => dp.classList.remove('open'));
+      }
+    });
+
+    // Load room data from URL param
+    const roomData = {
+      'deluxe-studio': { title: 'Deluxe Studio', room: 'Room 101 · 2nd Floor', imgs: ['https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=90','https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=900&q=90','https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=900&q=90'] },
+      'master-suite':  { title: 'Master Suite',  room: 'Room 102 · 2nd Floor', imgs: ['https://images.unsplash.com/photo-1540518614846-7eded433c457?w=900&q=90','https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=900&q=90','https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=900&q=90'] },
+      'urban-loft':    { title: 'Urban Loft',    room: 'Room 201 · 3rd Floor', imgs: ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=900&q=90','https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=900&q=90','https://images.unsplash.com/photo-1502005097973-6a7082348e28?w=900&q=90'] },
+      'garden-view':   { title: 'Garden View',   room: 'Room 202 · 3rd Floor', imgs: ['https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&q=90','https://images.unsplash.com/photo-1507652313519-d4e9174996dd?w=900&q=90','https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=900&q=90'] },
+      'cozy-den':      { title: 'Cozy Den',      room: 'Room 203 · 3rd Floor', imgs: ['https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=90','https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=900&q=90','https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=900&q=90'] },
+      'sky-terrace':   { title: 'Sky Terrace',   room: 'Room 301 · 4th Floor', imgs: ['https://images.unsplash.com/photo-1600210492493-0946911123ea?w=900&q=90','https://images.unsplash.com/photo-1567767292278-a4f21aa2d36e?w=900&q=90','https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=900&q=90'] },
+    };
+    const param = new URLSearchParams(location.search).get('room') || 'deluxe-studio';
+    const data  = roomData[param] || roomData['deluxe-studio'];
+
+    document.getElementById('roomTitle').textContent = data.title;
+    document.getElementById('mainImg').src = data.imgs[0];
+    document.title = data.title + ' — Apartment';
+    // Update thumbnails
+    const thumbWraps = document.querySelectorAll('.thumb-wrap');
+    const thumbImgs  = document.querySelectorAll('.thumb-img');
+    data.imgs.forEach((src, i) => {
+      if (thumbWraps[i]) thumbWraps[i].setAttribute('onclick', `switchThumb(this,'${src}')`);
+      if (thumbImgs[i])  thumbImgs[i].src = src.replace('w=900','w=300');
+    });
+
+    // Scroll reveal
+    const obs = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);} }), {threshold:0.08});
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  </script>
+</body>
+</html>

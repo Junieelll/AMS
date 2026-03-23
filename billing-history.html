@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Billing History — Apartment</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{poppins:['Poppins','sans-serif']},borderRadius:{'4xl':'2rem','5xl':'3rem'}}}}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css" />
+  <style>
+    body{font-family:'Poppins',sans-serif;}
+    .nav-blur{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+    #mobileMenu{max-height:0;overflow:hidden;transition:max-height 0.35s ease;}
+    #mobileMenu.open{max-height:600px;}
+    .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+    .reveal.visible{opacity:1;transform:none;}
+    img{transition:none !important;}
+    *,*::before,*::after{transition:background-color 0.25s,border-color 0.25s,color 0.2s,box-shadow 0.2s,opacity 0.2s,transform 0.2s;}
+    .badge-paid{background:#dcfce7;color:#16a34a;}
+    .badge-pending{background:#fef9c3;color:#ca8a04;}
+    .badge-overdue{background:#fee2e2;color:#dc2626;}
+    .dark .badge-paid{background:rgba(22,163,74,0.15);color:#4ade80;}
+    .dark .badge-pending{background:rgba(234,179,8,0.15);color:#facc15;}
+    .dark .badge-overdue{background:rgba(220,38,38,0.15);color:#f87171;}
+  </style>
+</head>
+<body class="bg-neutral-100 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100 font-poppins">
+
+  <!-- NAVBAR -->
+  <nav class="nav-blur fixed top-0 left-0 right-0 z-50 bg-neutral-100/85 dark:bg-neutral-950/85 border-b border-neutral-200 dark:border-neutral-800">
+    <div class="h-14 md:h-16 flex items-center justify-between px-4 md:px-10">
+      <a href="index.html" class="w-11 h-11"><img src="ams-logo.png" alt="Logo" class="w-full h-full object-contain"/></a>
+      <ul class="hidden md:flex items-center gap-1 list-none m-0 p-0">
+        <li><a href="index.html" class="px-4 py-2 text-sm font-medium rounded-lg text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-white block">Home</a></li>
+        <li class="relative" data-dropdown>
+          <button class="dropdown-trigger flex items-center gap-1 px-4 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800 rounded-lg cursor-pointer border-none bg-transparent font-poppins">My Rooms <i class="uil uil-angle-down text-base dropdown-chevron" style="transition:transform 0.2s;"></i></button>
+          <div class="dropdown-menu absolute top-full left-0 mt-2 w-44 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-xl shadow-xl p-1.5 z-50 opacity-0 invisible pointer-events-none" style="transition:opacity 0.18s ease,transform 0.18s ease;transform:translateY(6px);">
+            <a href="all-rooms.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-apps"></i> All Rooms</a>
+            <a href="booked.html"    class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-calendar-alt"></i> Booked</a>
+            <a href="favorites.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-heart"></i> Favorites</a>
+          </div>
+        </li>
+        <li class="relative" data-dropdown>
+          <button class="dropdown-trigger flex items-center gap-1 px-4 py-2 text-sm font-semibold text-neutral-900 dark:text-white bg-neutral-200 dark:bg-neutral-800 rounded-lg cursor-pointer border-none bg-transparent font-poppins">Account <i class="uil uil-angle-down text-base dropdown-chevron" style="transition:transform 0.2s;"></i></button>
+          <div class="dropdown-menu absolute top-full left-0 mt-2 w-48 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-xl shadow-xl p-1.5 z-50 opacity-0 invisible pointer-events-none" style="transition:opacity 0.18s ease,transform 0.18s ease;transform:translateY(6px);">
+            <a href="billing-history.html" class="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 rounded-lg"><i class="uil uil-receipt"></i> Billing History</a>
+            <a href="payment.html"         class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-credit-card"></i> Payment</a>
+            <a href="complaint.html"       class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-comment-exclamation"></i> Complaint</a>
+          </div>
+        </li>
+      </ul>
+      <div class="flex items-center gap-2">
+        <button id="darkToggle" class="w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-full border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 shadow-sm cursor-pointer"><i id="themeIcon" class="uil uil-sun text-base"></i></button>
+        <div class="relative" id="avatarDropdown">
+          <div id="avatarTrigger" class="w-8 h-8 md:w-9 md:h-9 rounded-full overflow-hidden border-2 border-neutral-200 dark:border-neutral-700 cursor-pointer"><img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&q=80" alt="Avatar" class="w-full h-full object-cover"/></div>
+          <div id="avatarMenu" class="absolute top-full right-0 mt-2 w-44 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-xl shadow-xl p-1.5 z-50 opacity-0 invisible pointer-events-none" style="transition:opacity 0.18s ease,transform 0.18s ease;transform:translateY(6px);">
+            <a href="profile.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-user"></i> Profile</a>
+            <a href="settings.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-setting"></i> Settings</a>
+            <div class="my-1 border-t border-neutral-100 dark:border-neutral-800"></div>
+            <a href="#" class="flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg"><i class="uil uil-sign-out-alt"></i> Logout</a>
+          </div>
+        </div>
+        <button id="menuToggle" class="md:hidden flex items-center justify-center w-8 h-8 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer border-none bg-transparent text-neutral-700 dark:text-neutral-300"><i id="menuIcon" class="uil uil-bars text-xl"></i></button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="md:hidden border-t border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-950">
+      <div class="px-4 py-3 flex flex-col gap-1">
+        <a href="index.html" class="px-4 py-2 text-sm font-medium rounded-lg text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-white block">Home</a>
+        <div><button onclick="toggleMobileSection('myRooms')" class="w-full flex items-center justify-between px-3 py-2.5 text-sm text-neutral-500 rounded-lg cursor-pointer border-none bg-transparent font-poppins text-left hover:bg-neutral-100 dark:hover:bg-neutral-800">My Rooms <i class="uil uil-angle-down text-lg" id="myRoomsIcon"></i></button>
+          <div id="myRooms" class="hidden flex-col pl-3 gap-1">
+            <a href="all-rooms.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 rounded-lg"><i class="uil uil-apps"></i> All Rooms</a>
+            <a href="booked.html"    class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 rounded-lg"><i class="uil uil-calendar-alt"></i> Booked</a>
+            <a href="favorites.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 rounded-lg"><i class="uil uil-heart"></i> Favorites</a>
+          </div>
+        </div>
+        <div><button onclick="toggleMobileSection('accountMenu')" class="w-full flex items-center justify-between px-3 py-2.5 text-sm font-semibold rounded-lg cursor-pointer border-none bg-transparent font-poppins text-left hover:bg-neutral-100 dark:hover:bg-neutral-800">Account <i class="uil uil-angle-down text-lg" id="accountMenuIcon"></i></button>
+          <div id="accountMenu" class="hidden flex-col pl-3 gap-1">
+            <a href="billing-history.html" class="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-neutral-900 dark:text-white rounded-lg"><i class="uil uil-receipt"></i> Billing History</a>
+            <a href="payment.html"         class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 rounded-lg"><i class="uil uil-credit-card"></i> Payment</a>
+            <a href="complaint.html"       class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 rounded-lg"><i class="uil uil-comment-exclamation"></i> Complaint</a>
+          </div>
+        </div>
+        <div class="border-t border-neutral-200 dark:border-neutral-700 mt-1 pt-2">
+          <a href="#" class="flex items-center gap-2 px-3 py-2.5 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800"><i class="uil uil-user"></i> Profile</a>
+          <a href="#" class="flex items-center gap-2 px-3 py-2.5 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800"><i class="uil uil-setting"></i> Settings</a>
+          <a href="#" class="flex items-center gap-2 px-3 py-2.5 text-sm text-red-500 hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40"><i class="uil uil-sign-out-alt"></i> Logout</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-4xl mx-auto px-4 md:px-8 pt-24 pb-16">
+
+    <!-- Header -->
+    <div class="mb-8 reveal">
+      <p class="text-xs font-medium tracking-widest uppercase text-neutral-400 mb-1">Account</p>
+      <h1 class="text-2xl md:text-3xl font-semibold mb-1">Billing History</h1>
+      <p class="text-sm text-neutral-500 dark:text-neutral-400">All your rent payments and invoices in one place.</p>
+    </div>
+
+    <!-- Summary cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8 reveal">
+      <div class="bg-white dark:bg-neutral-900 rounded-2xl p-5 border border-neutral-100 dark:border-neutral-800">
+        <p class="text-xs text-neutral-400 mb-1">Total Paid (2025)</p>
+        <p class="text-2xl font-semibold text-green-600 dark:text-green-400">₱14,000</p>
+      </div>
+      <div class="bg-white dark:bg-neutral-900 rounded-2xl p-5 border border-neutral-100 dark:border-neutral-800">
+        <p class="text-xs text-neutral-400 mb-1">Current Balance</p>
+        <p class="text-2xl font-semibold">₱0.00</p>
+      </div>
+      <div class="bg-white dark:bg-neutral-900 rounded-2xl p-5 border border-neutral-100 dark:border-neutral-800">
+        <p class="text-xs text-neutral-400 mb-1">Next Due Date</p>
+        <p class="text-2xl font-semibold">May 5</p>
+      </div>
+    </div>
+
+    <!-- Billing table -->
+    <div class="bg-white dark:bg-neutral-900 rounded-3xl border border-neutral-100 dark:border-neutral-800 overflow-hidden reveal">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-neutral-100 dark:border-neutral-800">
+        <h2 class="text-sm font-semibold">Transaction History</h2>
+        <button class="flex items-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white border border-neutral-200 dark:border-neutral-700 px-3 py-1.5 rounded-lg cursor-pointer bg-transparent font-poppins">
+          <i class="uil uil-download-alt"></i> Export
+        </button>
+      </div>
+
+      <!-- Table header -->
+      <div class="hidden sm:grid grid-cols-5 px-5 py-2.5 text-xs font-medium text-neutral-400 border-b border-neutral-100 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-950">
+        <span class="col-span-2">Description</span><span>Date</span><span>Amount</span><span class="text-right">Status</span>
+      </div>
+
+      <!-- Rows -->
+      <div class="divide-y divide-neutral-100 dark:divide-neutral-800">
+
+        <div class="grid grid-cols-2 sm:grid-cols-5 items-center px-5 py-4 hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
+          <div class="col-span-2 sm:col-span-2">
+            <p class="text-sm font-medium">April 2025 Rent</p>
+            <p class="text-xs text-neutral-400">Sky Terrace · Room 301</p>
+          </div>
+          <p class="text-xs text-neutral-500 dark:text-neutral-400 hidden sm:block">Apr 3, 2025</p>
+          <p class="text-sm font-semibold hidden sm:block">₱3,500</p>
+          <div class="text-right sm:block hidden"><span class="badge-paid text-xs font-medium px-2.5 py-1 rounded-full">Paid</span></div>
+          <div class="sm:hidden flex justify-between items-center mt-1 col-span-2">
+            <span class="text-xs text-neutral-400">Apr 3, 2025 · ₱3,500</span>
+            <span class="badge-paid text-xs font-medium px-2.5 py-1 rounded-full">Paid</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-5 items-center px-5 py-4 hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
+          <div class="col-span-2 sm:col-span-2">
+            <p class="text-sm font-medium">March 2025 Rent</p>
+            <p class="text-xs text-neutral-400">Sky Terrace · Room 301</p>
+          </div>
+          <p class="text-xs text-neutral-500 dark:text-neutral-400 hidden sm:block">Mar 2, 2025</p>
+          <p class="text-sm font-semibold hidden sm:block">₱3,500</p>
+          <div class="text-right hidden sm:block"><span class="badge-paid text-xs font-medium px-2.5 py-1 rounded-full">Paid</span></div>
+          <div class="sm:hidden flex justify-between items-center mt-1 col-span-2">
+            <span class="text-xs text-neutral-400">Mar 2, 2025 · ₱3,500</span>
+            <span class="badge-paid text-xs font-medium px-2.5 py-1 rounded-full">Paid</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-5 items-center px-5 py-4 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 bg-yellow-50/40 dark:bg-yellow-900/5">
+          <div class="col-span-2 sm:col-span-2">
+            <p class="text-sm font-medium">May 2025 Rent</p>
+            <p class="text-xs text-neutral-400">Sky Terrace · Room 301</p>
+          </div>
+          <p class="text-xs text-neutral-500 dark:text-neutral-400 hidden sm:block">Due May 5, 2025</p>
+          <p class="text-sm font-semibold hidden sm:block">₱3,500</p>
+          <div class="text-right hidden sm:block"><span class="badge-pending text-xs font-medium px-2.5 py-1 rounded-full">Pending</span></div>
+          <div class="sm:hidden flex justify-between items-center mt-1 col-span-2">
+            <span class="text-xs text-neutral-400">Due May 5 · ₱3,500</span>
+            <span class="badge-pending text-xs font-medium px-2.5 py-1 rounded-full">Pending</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-5 items-center px-5 py-4 hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
+          <div class="col-span-2 sm:col-span-2">
+            <p class="text-sm font-medium">Security Deposit</p>
+            <p class="text-xs text-neutral-400">Sky Terrace · Room 301</p>
+          </div>
+          <p class="text-xs text-neutral-500 dark:text-neutral-400 hidden sm:block">Feb 28, 2025</p>
+          <p class="text-sm font-semibold hidden sm:block">₱3,500</p>
+          <div class="text-right hidden sm:block"><span class="badge-paid text-xs font-medium px-2.5 py-1 rounded-full">Paid</span></div>
+          <div class="sm:hidden flex justify-between items-center mt-1 col-span-2">
+            <span class="text-xs text-neutral-400">Feb 28, 2025 · ₱3,500</span>
+            <span class="badge-paid text-xs font-medium px-2.5 py-1 rounded-full">Paid</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-5 items-center px-5 py-4 hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
+          <div class="col-span-2 sm:col-span-2">
+            <p class="text-sm font-medium">December 2024 Rent</p>
+            <p class="text-xs text-neutral-400">Garden View · Room 202</p>
+          </div>
+          <p class="text-xs text-neutral-500 dark:text-neutral-400 hidden sm:block">Dec 4, 2024</p>
+          <p class="text-sm font-semibold hidden sm:block">₱3,500</p>
+          <div class="text-right hidden sm:block"><span class="badge-paid text-xs font-medium px-2.5 py-1 rounded-full">Paid</span></div>
+          <div class="sm:hidden flex justify-between items-center mt-1 col-span-2">
+            <span class="text-xs text-neutral-400">Dec 4, 2024 · ₱3,500</span>
+            <span class="badge-paid text-xs font-medium px-2.5 py-1 rounded-full">Paid</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    const html=document.documentElement,themeIcon=document.getElementById('themeIcon');
+    function applyTheme(d){d?html.classList.add('dark'):html.classList.remove('dark');themeIcon.className=d?'uil uil-moon text-base':'uil uil-sun text-base';}
+    const saved=localStorage.getItem('theme');
+    applyTheme(saved==='dark'||(!saved&&window.matchMedia('(prefers-color-scheme: dark)').matches));
+    document.getElementById('darkToggle').addEventListener('click',()=>{const d=html.classList.contains('dark');localStorage.setItem('theme',d?'light':'dark');applyTheme(!d);});
+    let menuOpen=false;
+    document.getElementById('menuToggle').addEventListener('click',()=>{menuOpen=!menuOpen;document.getElementById('mobileMenu').classList.toggle('open',menuOpen);document.getElementById('menuIcon').className=menuOpen?'uil uil-times text-xl':'uil uil-bars text-xl';});
+    function toggleMobileSection(id){const el=document.getElementById(id),icon=document.getElementById(id+'Icon'),isOpen=!el.classList.contains('hidden');el.classList.toggle('hidden',isOpen);el.classList.toggle('flex',!isOpen);if(icon)icon.className=isOpen?'uil uil-angle-down text-lg':'uil uil-angle-up text-lg';}
+    const avatarTrigger=document.getElementById('avatarTrigger'),avatarMenu=document.getElementById('avatarMenu'),avatarWrapper=document.getElementById('avatarDropdown');
+    let avatarOpen=false;
+    const openAvatar=()=>{avatarOpen=true;avatarMenu.style.cssText='transform:translateY(0);opacity:1;visibility:visible;';avatarMenu.classList.remove('pointer-events-none');};
+    const closeAvatar=()=>{avatarOpen=false;avatarMenu.style.cssText='transform:translateY(6px);opacity:0;visibility:hidden;';avatarMenu.classList.add('pointer-events-none');};
+    avatarTrigger.addEventListener('click',e=>{e.stopPropagation();avatarOpen?closeAvatar():openAvatar();});
+    document.addEventListener('click',e=>{if(!avatarWrapper.contains(e.target))closeAvatar();});
+    document.querySelectorAll('[data-dropdown]').forEach(item=>{const menu=item.querySelector('.dropdown-menu'),chevron=item.querySelector('.dropdown-chevron');let t=null;
+      const open=()=>{clearTimeout(t);menu.style.cssText='transform:translateY(0);opacity:1;visibility:visible;';menu.classList.remove('pointer-events-none');if(chevron)chevron.style.transform='rotate(180deg)';};
+      const close=()=>{t=setTimeout(()=>{menu.style.cssText='transform:translateY(6px);opacity:0;visibility:hidden;';menu.classList.add('pointer-events-none');if(chevron)chevron.style.transform='rotate(0deg)';},120);};
+      item.querySelector('.dropdown-trigger').addEventListener('mouseenter',open);item.querySelector('.dropdown-trigger').addEventListener('mouseleave',close);
+      menu.addEventListener('mouseenter',open);menu.addEventListener('mouseleave',close);
+      item.querySelector('.dropdown-trigger').addEventListener('click',()=>menu.style.visibility==='visible'?close():open());
+      document.addEventListener('click',e=>{if(!item.contains(e.target))close();});
+    });
+    const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}}),{threshold:0.08});
+    document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  </script>
+</body>
+</html>

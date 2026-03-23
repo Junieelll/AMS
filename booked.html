@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Booked — Apartment</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: { fontFamily: { poppins: ['Poppins','sans-serif'] }, borderRadius: { '4xl':'2rem','5xl':'3rem' } } }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css" />
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+    .nav-blur { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+    #mobileMenu { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+    #mobileMenu.open { max-height: 600px; }
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    img { transition: none !important; }
+    *, *::before, *::after { transition: background-color 0.25s, border-color 0.25s, color 0.2s, box-shadow 0.2s, opacity 0.2s, transform 0.2s; }
+    .badge-active   { background:#dcfce7; color:#16a34a; }
+    .badge-past     { background:#f5f5f5; color:#737373; }
+    .badge-upcoming { background:#dbeafe; color:#2563eb; }
+    .dark .badge-active   { background:rgba(22,163,74,0.15);  color:#4ade80; }
+    .dark .badge-past     { background:rgba(115,115,115,0.15); color:#a3a3a3; }
+    .dark .badge-upcoming { background:rgba(37,99,235,0.15);  color:#60a5fa; }
+    .tab-btn { font-size:14px; font-weight:500; padding:8px 20px; border-radius:50px; border:none; cursor:pointer; background:transparent; }
+    .tab-btn.active { background:#171717; color:#fff; }
+    .dark .tab-btn.active { background:#fff; color:#171717; }
+    .tab-btn:not(.active) { color:#737373; }
+    .tab-btn:not(.active):hover { color:#171717; }
+    .dark .tab-btn:not(.active):hover { color:#fff; }
+  </style>
+</head>
+<body class="bg-neutral-100 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100 font-poppins">
+
+  <!-- NAVBAR -->
+  <nav class="nav-blur fixed top-0 left-0 right-0 z-50 bg-neutral-100/85 dark:bg-neutral-950/85 border-b border-neutral-200 dark:border-neutral-800">
+    <div class="h-14 md:h-16 flex items-center justify-between px-4 md:px-10">
+      <a href="index.html" class="w-11 h-11"><img src="ams-logo.png" alt="Logo" class="w-full h-full object-contain" /></a>
+      <ul class="hidden md:flex items-center gap-1 list-none m-0 p-0">
+        <li><a href="index.html" class="px-4 py-2 text-sm font-medium rounded-lg text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-white block">Home</a></li>
+        <li class="relative" data-dropdown>
+          <button class="dropdown-trigger flex items-center gap-1 px-4 py-2 text-sm font-semibold text-neutral-900 dark:text-white bg-neutral-200 dark:bg-neutral-800 rounded-lg cursor-pointer border-none bg-transparent font-poppins">
+            My Rooms <i class="uil uil-angle-down text-base dropdown-chevron" style="transition:transform 0.2s;"></i>
+          </button>
+          <div class="dropdown-menu absolute top-full left-0 mt-2 w-44 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-xl shadow-xl p-1.5 z-50 opacity-0 invisible pointer-events-none" style="transition:opacity 0.18s ease,transform 0.18s ease;transform:translateY(6px);">
+            <a href="all-rooms.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-apps text-base"></i> All Rooms</a>
+            <a href="booked.html"    class="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 rounded-lg"><i class="uil uil-calendar-alt text-base"></i> Booked</a>
+            <a href="favorites.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-heart text-base"></i> Favorites</a>
+          </div>
+        </li>
+        <li class="relative" data-dropdown>
+          <button class="dropdown-trigger flex items-center gap-1 px-4 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800 rounded-lg cursor-pointer border-none bg-transparent font-poppins">
+            Account <i class="uil uil-angle-down text-base dropdown-chevron" style="transition:transform 0.2s;"></i>
+          </button>
+          <div class="dropdown-menu absolute top-full left-0 mt-2 w-48 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-xl shadow-xl p-1.5 z-50 opacity-0 invisible pointer-events-none" style="transition:opacity 0.18s ease,transform 0.18s ease;transform:translateY(6px);">
+            <a href="billing-history.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-receipt text-base"></i> Billing History</a>
+            <a href="payment.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-credit-card text-base"></i> Payment</a>
+            <a href="complaint.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-comment-exclamation text-base"></i> Complaint</a>
+          </div>
+        </li>
+      </ul>
+      <div class="flex items-center gap-2">
+        <button id="darkToggle" class="w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-full border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 shadow-sm cursor-pointer">
+          <i id="themeIcon" class="uil uil-sun text-base"></i>
+        </button>
+        <div class="relative" id="avatarDropdown">
+          <div id="avatarTrigger" class="w-8 h-8 md:w-9 md:h-9 rounded-full overflow-hidden border-2 border-neutral-200 dark:border-neutral-700 cursor-pointer">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&q=80" alt="Avatar" class="w-full h-full object-cover" />
+          </div>
+          <div id="avatarMenu" class="absolute top-full right-0 mt-2 w-44 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-xl shadow-xl p-1.5 z-50 opacity-0 invisible pointer-events-none" style="transition:opacity 0.18s ease,transform 0.18s ease;transform:translateY(6px);">
+            <a href="profile.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-user text-base"></i> Profile</a>
+            <a href="settings.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-setting text-base"></i> Settings</a>
+            <div class="my-1 border-t border-neutral-100 dark:border-neutral-800"></div>
+            <a href="index.html" class="flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg"><i class="uil uil-sign-out-alt text-base"></i> Logout</a>
+          </div>
+        </div>
+        <button id="menuToggle" class="md:hidden flex items-center justify-center w-8 h-8 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer border-none bg-transparent text-neutral-700 dark:text-neutral-300">
+          <i id="menuIcon" class="uil uil-bars text-xl"></i>
+        </button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="md:hidden border-t border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-950">
+      <div class="px-4 py-3 flex flex-col gap-1">
+        <a href="index.html" class="px-4 py-2 text-sm font-medium rounded-lg text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-white block">Home</a>
+        <div>
+          <button onclick="toggleMobileSection('myRooms')" class="w-full flex items-center justify-between px-3 py-2.5 text-sm font-semibold rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer border-none bg-transparent font-poppins text-left">
+            My Rooms <i class="uil uil-angle-down text-lg" id="myRoomsIcon"></i>
+          </button>
+          <div id="myRooms" class="hidden flex-col pl-3 gap-1">
+            <a href="all-rooms.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg"><i class="uil uil-apps text-base"></i> All Rooms</a>
+            <a href="booked.html"    class="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-neutral-900 dark:text-white rounded-lg"><i class="uil uil-calendar-alt text-base"></i> Booked</a>
+            <a href="favorites.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg"><i class="uil uil-heart text-base"></i> Favorites</a>
+          </div>
+        </div>
+        <div>
+          <button onclick="toggleMobileSection('accountMenu')" class="w-full flex items-center justify-between px-3 py-2.5 text-sm text-neutral-500 dark:text-neutral-400 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer border-none bg-transparent font-poppins text-left">
+            Account <i class="uil uil-angle-down text-lg" id="accountMenuIcon"></i>
+          </button>
+          <div id="accountMenu" class="hidden flex-col pl-3 gap-1">
+            <a href="billing-history.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg"><i class="uil uil-receipt text-base"></i> Billing History</a>
+            <a href="payment.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg"><i class="uil uil-credit-card text-base"></i> Payment</a>
+            <a href="complaint.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg"><i class="uil uil-comment-exclamation text-base"></i> Complaint</a>
+          </div>
+        </div>
+        <div class="border-t border-neutral-200 dark:border-neutral-700 mt-1 pt-2">
+          <a href="profile.html" class="flex items-center gap-2 px-3 py-2.5 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800"><i class="uil uil-user text-base"></i> Profile</a>
+          <a href="settings.html" class="flex items-center gap-2 px-3 py-2.5 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800"><i class="uil uil-setting text-base"></i> Settings</a>
+          <a href="index.html" class="flex items-center gap-2 px-3 py-2.5 text-sm text-red-500 hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40"><i class="uil uil-sign-out-alt text-base"></i> Logout</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE CONTENT -->
+  <main class="max-w-4xl mx-auto px-4 md:px-8 pt-24 pb-16">
+
+    <!-- Header -->
+    <div class="mb-8 reveal">
+      <p class="text-xs font-medium tracking-widest uppercase text-neutral-400 mb-1">My Rooms</p>
+      <h1 class="text-2xl md:text-3xl font-semibold mb-1">Bookings</h1>
+      <p class="text-sm text-neutral-500 dark:text-neutral-400">Track your current stay and past rental history.</p>
+    </div>
+
+    <!-- Current stay banner -->
+    <div class="bg-neutral-900 dark:bg-white rounded-3xl p-5 md:p-6 mb-8 flex flex-col sm:flex-row sm:items-center gap-5 reveal">
+      <img src="https://images.unsplash.com/photo-1600210492493-0946911123ea?w=300&q=80" class="w-full sm:w-28 h-24 object-cover rounded-2xl flex-shrink-0" alt="Sky Terrace" />
+      <div class="flex-1">
+        <p class="text-xs font-medium text-neutral-400 dark:text-neutral-600 mb-0.5">Currently Staying</p>
+        <h2 class="text-lg font-semibold text-white dark:text-neutral-900">Sky Terrace — Room 301</h2>
+        <div class="flex flex-wrap gap-3 mt-2 text-xs text-neutral-400 dark:text-neutral-600">
+          <span class="flex items-center gap-1"><i class="uil uil-calendar-alt"></i> Mar 1 – May 31, 2025</span>
+          <span class="flex items-center gap-1"><i class="uil uil-money-bill"></i> ₱3,500 / month</span>
+          <span class="flex items-center gap-1"><i class="uil uil-map-marker"></i> 4th Floor</span>
+        </div>
+      </div>
+      <div class="flex flex-col gap-2 shrink-0">
+        <span class="badge-active text-xs font-medium px-3 py-1.5 rounded-full text-center">Active</span>
+        <button onclick="openContract()" class="text-xs font-medium px-4 py-2 rounded-xl border border-neutral-700 dark:border-neutral-300 text-neutral-300 dark:text-neutral-700 hover:bg-neutral-800 dark:hover:bg-neutral-100 cursor-pointer bg-transparent font-poppins">View Contract</button>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex gap-1 mb-6 bg-neutral-100 dark:bg-neutral-900 p-1 rounded-2xl w-fit reveal">
+      <button class="tab-btn active" onclick="switchTab(this,'current')">Current</button>
+      <button class="tab-btn" onclick="switchTab(this,'past')">Past</button>
+      <button class="tab-btn" onclick="switchTab(this,'upcoming')">Upcoming</button>
+    </div>
+
+    <!-- Current tab -->
+    <div id="tab-current" class="tab-panel reveal">
+      <div class="bg-white dark:bg-neutral-900 rounded-3xl border border-neutral-100 dark:border-neutral-800 overflow-hidden">
+        <div class="flex flex-col sm:flex-row">
+          <img src="https://images.unsplash.com/photo-1600210492493-0946911123ea?w=400&q=80" class="w-full sm:w-40 h-36 object-cover flex-shrink-0" alt="Sky Terrace" />
+          <div class="p-5 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-start justify-between gap-2 mb-2">
+                <div>
+                  <h3 class="font-semibold text-sm">Sky Terrace</h3>
+                  <p class="text-xs text-neutral-500 dark:text-neutral-400">Room 301 · 4th Floor · 32 sqm</p>
+                </div>
+                <span class="badge-active text-xs font-medium px-2.5 py-1 rounded-full shrink-0">Active</span>
+              </div>
+              <div class="grid grid-cols-2 gap-y-1.5 text-xs text-neutral-500 dark:text-neutral-400 mt-3">
+                <span class="flex items-center gap-1.5"><i class="uil uil-calendar-alt text-sm"></i> Check-in: Mar 1, 2025</span>
+                <span class="flex items-center gap-1.5"><i class="uil uil-calendar-alt text-sm"></i> End: May 31, 2025</span>
+                <span class="flex items-center gap-1.5"><i class="uil uil-money-bill text-sm"></i> ₱3,500/month</span>
+                <span class="flex items-center gap-1.5"><i class="uil uil-check-circle text-sm text-green-500"></i> Rent paid – April</span>
+              </div>
+            </div>
+            <div class="flex gap-2 mt-4">
+              <a href="payment.html" class="text-xs font-medium px-4 py-2 rounded-xl bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 hover:opacity-80 border-none font-poppins" style="text-decoration:none;display:inline-flex;align-items:center;">Pay Rent</a>
+              <a href="complaint.html" class="text-xs font-medium px-4 py-2 rounded-xl border border-neutral-200 dark:border-neutral-700 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 font-poppins" style="text-decoration:none;display:inline-flex;align-items:center;">Request Maintenance</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Past tab -->
+    <div id="tab-past" class="tab-panel hidden">
+      <div class="flex flex-col gap-4">
+
+        <div class="bg-white dark:bg-neutral-900 rounded-3xl border border-neutral-100 dark:border-neutral-800 overflow-hidden">
+          <div class="flex flex-col sm:flex-row">
+            <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&q=80" class="w-full sm:w-40 h-36 object-cover flex-shrink-0" alt="Garden View" />
+            <div class="p-5 flex-1">
+              <div class="flex items-start justify-between gap-2 mb-2">
+                <div>
+                  <h3 class="font-semibold text-sm">Garden View</h3>
+                  <p class="text-xs text-neutral-500 dark:text-neutral-400">Room 202 · 3rd Floor · 26 sqm</p>
+                </div>
+                <span class="badge-past text-xs font-medium px-2.5 py-1 rounded-full shrink-0">Completed</span>
+              </div>
+              <div class="grid grid-cols-2 gap-y-1.5 text-xs text-neutral-500 dark:text-neutral-400 mt-3">
+                <span class="flex items-center gap-1.5"><i class="uil uil-calendar-alt text-sm"></i> Dec 1, 2024</span>
+                <span class="flex items-center gap-1.5"><i class="uil uil-calendar-alt text-sm"></i> Feb 28, 2025</span>
+                <span class="flex items-center gap-1.5"><i class="uil uil-money-bill text-sm"></i> ₱3,500/month</span>
+                <span class="flex items-center gap-1.5"><i class="uil uil-check-circle text-sm text-green-500"></i> All dues cleared</span>
+              </div>
+              <button onclick="downloadReceipt(this)" class="mt-4 text-xs font-medium px-4 py-2 rounded-xl border border-neutral-200 dark:border-neutral-700 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer bg-transparent font-poppins flex items-center gap-1.5"><i class="uil uil-download-alt"></i> Download Receipt</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-neutral-900 rounded-3xl border border-neutral-100 dark:border-neutral-800 overflow-hidden">
+          <div class="flex flex-col sm:flex-row">
+            <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&q=80" class="w-full sm:w-40 h-36 object-cover flex-shrink-0" alt="Deluxe Studio" />
+            <div class="p-5 flex-1">
+              <div class="flex items-start justify-between gap-2 mb-2">
+                <div>
+                  <h3 class="font-semibold text-sm">Deluxe Studio</h3>
+                  <p class="text-xs text-neutral-500 dark:text-neutral-400">Room 101 · 2nd Floor · 24 sqm</p>
+                </div>
+                <span class="badge-past text-xs font-medium px-2.5 py-1 rounded-full shrink-0">Completed</span>
+              </div>
+              <div class="grid grid-cols-2 gap-y-1.5 text-xs text-neutral-500 dark:text-neutral-400 mt-3">
+                <span class="flex items-center gap-1.5"><i class="uil uil-calendar-alt text-sm"></i> Jun 1, 2024</span>
+                <span class="flex items-center gap-1.5"><i class="uil uil-calendar-alt text-sm"></i> Nov 30, 2024</span>
+                <span class="flex items-center gap-1.5"><i class="uil uil-money-bill text-sm"></i> ₱3,500/month</span>
+                <span class="flex items-center gap-1.5"><i class="uil uil-check-circle text-sm text-green-500"></i> All dues cleared</span>
+              </div>
+              <button onclick="downloadReceipt(this)" class="mt-4 text-xs font-medium px-4 py-2 rounded-xl border border-neutral-200 dark:border-neutral-700 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer bg-transparent font-poppins flex items-center gap-1.5"><i class="uil uil-download-alt"></i> Download Receipt</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Upcoming tab -->
+    <div id="tab-upcoming" class="tab-panel hidden">
+      <div class="bg-white dark:bg-neutral-900 rounded-3xl border border-neutral-100 dark:border-neutral-800 overflow-hidden">
+        <div class="flex flex-col sm:flex-row">
+          <img src="https://images.unsplash.com/photo-1540518614846-7eded433c457?w=400&q=80" class="w-full sm:w-40 h-36 object-cover flex-shrink-0" alt="Master Suite" />
+          <div class="p-5 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-start justify-between gap-2 mb-2">
+                <div>
+                  <h3 class="font-semibold text-sm">Master Suite</h3>
+                  <p class="text-xs text-neutral-500 dark:text-neutral-400">Room 102 · 2nd Floor · 30 sqm</p>
+                </div>
+                <span class="badge-upcoming text-xs font-medium px-2.5 py-1 rounded-full shrink-0">Upcoming</span>
+              </div>
+              <div class="grid grid-cols-2 gap-y-1.5 text-xs text-neutral-500 dark:text-neutral-400 mt-3">
+                <span class="flex items-center gap-1.5"><i class="uil uil-calendar-alt text-sm"></i> Check-in: Jun 1, 2025</span>
+                <span class="flex items-center gap-1.5"><i class="uil uil-calendar-alt text-sm"></i> End: Aug 31, 2025</span>
+                <span class="flex items-center gap-1.5"><i class="uil uil-money-bill text-sm"></i> ₱3,500/month</span>
+                <span class="flex items-center gap-1.5"><i class="uil uil-hourglass text-sm text-blue-500"></i> 38 days away</span>
+              </div>
+            </div>
+            <div class="flex gap-2 mt-4">
+              <a href="room-details.html?room=master-suite" class="text-xs font-medium px-4 py-2 rounded-xl bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 hover:opacity-80 border-none font-poppins" style="text-decoration:none;display:inline-flex;align-items:center;">View Details</a>
+              <button onclick="openCancelModal()" class="text-xs font-medium px-4 py-2 rounded-xl border border-red-200 dark:border-red-900 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer bg-transparent font-poppins">Cancel Booking</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ══ Contract Modal ══ -->
+  <div id="contractModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+    <div class="bg-white dark:bg-neutral-900 rounded-3xl p-7 max-w-sm w-full shadow-2xl">
+      <div class="flex items-center justify-between mb-5">
+        <h3 class="font-semibold text-base">Lease Contract</h3>
+        <button onclick="closeModal('contractModal')" class="w-7 h-7 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center cursor-pointer border-none text-neutral-500 hover:text-neutral-900 dark:hover:text-white"><i class="uil uil-times text-sm"></i></button>
+      </div>
+      <div class="bg-neutral-50 dark:bg-neutral-800 rounded-2xl p-4 mb-5 space-y-2 text-sm">
+        <div class="flex justify-between"><span class="text-neutral-500 dark:text-neutral-400">Tenant</span><span class="font-medium">Juan Dela Cruz</span></div>
+        <div class="flex justify-between"><span class="text-neutral-500 dark:text-neutral-400">Room</span><span class="font-medium">Sky Terrace — 301</span></div>
+        <div class="flex justify-between"><span class="text-neutral-500 dark:text-neutral-400">Period</span><span class="font-medium">Mar 1 – May 31, 2025</span></div>
+        <div class="flex justify-between"><span class="text-neutral-500 dark:text-neutral-400">Monthly Rent</span><span class="font-medium">₱3,500</span></div>
+        <div class="flex justify-between"><span class="text-neutral-500 dark:text-neutral-400">Security Deposit</span><span class="font-medium">₱3,500 (paid)</span></div>
+        <div class="flex justify-between"><span class="text-neutral-500 dark:text-neutral-400">Status</span><span class="font-medium text-green-500">Active</span></div>
+      </div>
+      <p class="text-xs text-neutral-400 mb-5">For a full copy of your signed lease agreement, contact the property manager.</p>
+      <div class="flex gap-2">
+        <button onclick="closeModal('contractModal')" class="flex-1 border border-neutral-200 dark:border-neutral-700 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 font-medium text-sm py-3 rounded-2xl cursor-pointer bg-transparent font-poppins">Close</button>
+        <a href="contract.html" class="flex-1 text-center bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 font-medium text-sm py-3 rounded-2xl hover:opacity-85 font-poppins" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">View Full Contract</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Cancel Booking Modal ══ -->
+  <div id="cancelModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+    <div class="bg-white dark:bg-neutral-900 rounded-3xl p-7 max-w-sm w-full shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-semibold text-base">Cancel Booking?</h3>
+        <button onclick="closeModal('cancelModal')" class="w-7 h-7 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center cursor-pointer border-none text-neutral-500 hover:text-neutral-900 dark:hover:text-white"><i class="uil uil-times text-sm"></i></button>
+      </div>
+      <div class="bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900 rounded-2xl p-4 mb-5">
+        <p class="text-sm text-red-600 dark:text-red-400 font-medium mb-1">Master Suite — Room 102</p>
+        <p class="text-xs text-red-500 dark:text-red-400">Check-in: Jun 1, 2025 · 3 months</p>
+      </div>
+      <p class="text-xs text-neutral-500 dark:text-neutral-400 mb-5">Are you sure you want to cancel this booking? This action cannot be undone. A cancellation fee may apply per your lease agreement.</p>
+      <div class="flex gap-2">
+        <button onclick="confirmCancel()" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-medium text-sm py-3 rounded-2xl cursor-pointer border-none font-poppins transition-colors">Yes, Cancel</button>
+        <button onclick="closeModal('cancelModal')" class="flex-1 border border-neutral-200 dark:border-neutral-700 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 font-medium text-sm py-3 rounded-2xl cursor-pointer bg-transparent font-poppins">Keep Booking</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Toast ══ -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-sm font-medium px-5 py-3 rounded-2xl shadow-xl z-50 opacity-0 pointer-events-none whitespace-nowrap" style="transition:opacity 0.3s;">
+    <i class="uil uil-check-circle mr-2 text-green-400 dark:text-green-600"></i><span id="toastMsg">Done!</span>
+  </div>
+
+  <script>
+    // Dark mode
+    const html = document.documentElement;
+    const themeIcon = document.getElementById('themeIcon');
+    function applyTheme(dark) {
+      dark ? html.classList.add('dark') : html.classList.remove('dark');
+      themeIcon.className = dark ? 'uil uil-moon text-base' : 'uil uil-sun text-base';
+    }
+    const saved = localStorage.getItem('theme');
+    applyTheme(saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches));
+    document.getElementById('darkToggle').addEventListener('click', () => {
+      const isDark = html.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'light' : 'dark');
+      applyTheme(!isDark);
+    });
+    // Mobile menu
+    const menuToggle = document.getElementById('menuToggle');
+    const menuIcon   = document.getElementById('menuIcon');
+    const mobileMenu = document.getElementById('mobileMenu');
+    let menuOpen = false;
+    menuToggle.addEventListener('click', () => {
+      menuOpen = !menuOpen;
+      mobileMenu.classList.toggle('open', menuOpen);
+      menuIcon.className = menuOpen ? 'uil uil-times text-xl' : 'uil uil-bars text-xl';
+    });
+    function toggleMobileSection(id) {
+      const el = document.getElementById(id);
+      const icon = document.getElementById(id + 'Icon');
+      const isOpen = !el.classList.contains('hidden');
+      el.classList.toggle('hidden', isOpen); el.classList.toggle('flex', !isOpen);
+      if (icon) icon.className = isOpen ? 'uil uil-angle-down text-lg' : 'uil uil-angle-up text-lg';
+    }
+    // Avatar
+    const avatarTrigger = document.getElementById('avatarTrigger');
+    const avatarMenu    = document.getElementById('avatarMenu');
+    const avatarWrapper = document.getElementById('avatarDropdown');
+    let avatarOpen = false;
+    function openAvatar()  { avatarOpen=true;  avatarMenu.style.cssText='transform:translateY(0);opacity:1;visibility:visible;'; avatarMenu.classList.remove('pointer-events-none'); }
+    function closeAvatar() { avatarOpen=false; avatarMenu.style.cssText='transform:translateY(6px);opacity:0;visibility:hidden;'; avatarMenu.classList.add('pointer-events-none'); }
+    avatarTrigger.addEventListener('click', e => { e.stopPropagation(); avatarOpen ? closeAvatar() : openAvatar(); });
+    document.addEventListener('click', e => { if (!avatarWrapper.contains(e.target)) closeAvatar(); });
+    // Desktop dropdowns
+    document.querySelectorAll('[data-dropdown]').forEach(item => {
+      const menu = item.querySelector('.dropdown-menu'), chevron = item.querySelector('.dropdown-chevron');
+      let timer = null;
+      const open  = () => { clearTimeout(timer); menu.style.cssText='transform:translateY(0);opacity:1;visibility:visible;'; menu.classList.remove('pointer-events-none'); if(chevron) chevron.style.transform='rotate(180deg)'; };
+      const close = () => { timer=setTimeout(()=>{ menu.style.cssText='transform:translateY(6px);opacity:0;visibility:hidden;'; menu.classList.add('pointer-events-none'); if(chevron) chevron.style.transform='rotate(0deg)'; },120); };
+      item.querySelector('.dropdown-trigger').addEventListener('mouseenter', open);
+      item.querySelector('.dropdown-trigger').addEventListener('mouseleave', close);
+      menu.addEventListener('mouseenter', open); menu.addEventListener('mouseleave', close);
+      item.querySelector('.dropdown-trigger').addEventListener('click', () => menu.style.visibility==='visible' ? close() : open());
+      document.addEventListener('click', e => { if (!item.contains(e.target)) close(); });
+    });
+    // ── Modals ──
+    function openModal(id)  { const m = document.getElementById(id); m.classList.remove('hidden'); m.classList.add('flex'); }
+    function closeModal(id) { const m = document.getElementById(id); m.classList.add('hidden'); m.classList.remove('flex'); }
+    function openContract()   { openModal('contractModal'); }
+    function openCancelModal(){ openModal('cancelModal'); }
+    function confirmCancel() {
+      closeModal('cancelModal');
+      showToast('Booking cancelled. A confirmation will be sent to you.');
+      // Hide the upcoming card
+      setTimeout(() => {
+        const card = document.querySelector('#tab-upcoming .bg-white, #tab-upcoming .dark\\:bg-neutral-900');
+        if (card) { card.style.opacity='0'; card.style.transform='scale(0.96)'; card.style.transition='all 0.3s'; setTimeout(()=>card.remove(), 300); }
+      }, 400);
+    }
+    // ── Receipt download (simulated) ──
+    function downloadReceipt(btn) {
+      const room = btn.closest('.flex').querySelector('h3')?.textContent || 'Room';
+      btn.innerHTML = '<i class="uil uil-spinner-alt" style="animation:spin 0.8s linear infinite;display:inline-block;margin-right:4px;"></i> Downloading…';
+      btn.disabled = true;
+      setTimeout(() => {
+        btn.innerHTML = '<i class="uil uil-check-circle" style="margin-right:4px;color:#22c55e;"></i> Downloaded';
+        showToast('Receipt downloaded successfully!');
+        setTimeout(() => {
+          btn.innerHTML = '<i class="uil uil-download-alt" style="margin-right:4px;"></i> Download Receipt';
+          btn.disabled = false;
+        }, 2500);
+      }, 1400);
+    }
+    // ── Toast ──
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      t.style.opacity = '1'; t.classList.remove('pointer-events-none');
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => { t.style.opacity='0'; t.classList.add('pointer-events-none'); }, 3500);
+    }
+    // Close modals on backdrop click
+    ['contractModal','cancelModal'].forEach(id => {
+      document.getElementById(id).addEventListener('click', e => { if (e.target.id === id) closeModal(id); });
+    });
+    // Spin animation
+    const spinStyle = document.createElement('style');
+    spinStyle.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
+    document.head.appendChild(spinStyle);
+
+    // Tabs
+    function switchTab(btn, id) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + id).classList.remove('hidden');
+    }
+    // Scroll reveal
+    const obs = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);} }), {threshold:0.08});
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  </script>
+</body>
+</html>

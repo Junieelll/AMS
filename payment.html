@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Payment — Apartment</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{poppins:['Poppins','sans-serif']},borderRadius:{'4xl':'2rem','5xl':'3rem'}}}}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css"/>
+  <style>
+    body{font-family:'Poppins',sans-serif;}
+    .nav-blur{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+    #mobileMenu{max-height:0;overflow:hidden;transition:max-height 0.35s ease;}
+    #mobileMenu.open{max-height:600px;}
+    .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+    .reveal.visible{opacity:1;transform:none;}
+    img{transition:none !important;}
+    *,*::before,*::after{transition:background-color 0.25s,border-color 0.25s,color 0.2s,box-shadow 0.2s,opacity 0.2s,transform 0.2s;}
+    .method-card{border:2px solid transparent;border-radius:1rem;padding:1rem;cursor:pointer;transition:border-color 0.2s,background 0.2s;}
+    .method-card.selected{border-color:#171717;background:#fafafa;}
+    .dark .method-card.selected{border-color:#ffffff;background:#1c1917;}
+    .method-card:not(.selected):hover{border-color:#d4d4d4;}
+    .dark .method-card:not(.selected){border-color:#404040;}
+    .dark .method-card:not(.selected):hover{border-color:#737373;}
+    .method-card:not(.selected){border-color:#e5e5e5;}
+    #toast{transition:opacity 0.3s;}
+    /* ── Custom Date Picker ── */
+    .c-datepicker{position:relative;}
+    .c-date-trigger{width:100%;display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:13px;font-family:inherit;cursor:pointer;border-radius:12px;border:1.5px solid #e5e5e5;background:#fafafa;color:#a3a3a3;transition:border-color 0.2s;}
+    .dark .c-date-trigger{border-color:#404040;background:#262626;color:#525252;}
+    .c-date-trigger.has-value{color:#171717;}
+    .dark .c-date-trigger.has-value{color:#f5f5f5;}
+    .c-date-trigger:hover{border-color:#a3a3a3;}
+    .dark .c-date-trigger:hover{border-color:#737373;}
+    .c-datepicker.open .c-date-trigger{border-color:#171717;}
+    .dark .c-datepicker.open .c-date-trigger{border-color:#e5e5e5;}
+    .c-date-trigger i{font-size:16px;color:#a3a3a3;flex-shrink:0;}
+    .dark .c-date-trigger i{color:#525252;}
+    .c-cal{position:absolute;top:calc(100% + 6px);left:0;z-index:200;background:#fff;border:1.5px solid #e5e5e5;border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,0.12);padding:14px;width:296px;opacity:0;visibility:hidden;transform:translateY(6px);transition:opacity 0.18s ease,transform 0.18s ease,visibility 0.18s;}
+    .dark .c-cal{background:#1c1c1c;border-color:#404040;box-shadow:0 12px 40px rgba(0,0,0,0.5);}
+    .c-datepicker.open .c-cal{opacity:1;visibility:visible;transform:translateY(0);}
+    /* Cal header */
+    .c-cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:4px;}
+    .c-cal-hbtn{display:flex;align-items:center;gap:4px;padding:4px 8px;border-radius:8px;border:none;background:transparent;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;transition:background 0.15s,color 0.15s;}
+    .c-cal-hbtn:hover{background:#f0f0f0;}
+    .dark .c-cal-hbtn{color:#f5f5f5;}
+    .dark .c-cal-hbtn:hover{background:#2a2a2a;}
+    .c-cal-hbtn i{font-size:13px;color:#737373;}
+    .dark .c-cal-hbtn i{color:#a3a3a3;}
+    .c-cal-nav{width:28px;height:28px;border-radius:8px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:#737373;transition:background 0.15s,color 0.15s;flex-shrink:0;}
+    .c-cal-nav:hover{background:#f5f5f5;color:#171717;}
+    .dark .c-cal-nav{color:#737373;}
+    .dark .c-cal-nav:hover{background:#2a2a2a;color:#fff;}
+    /* Day grid */
+    .c-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+    .c-cal-dow{font-size:10px;font-weight:600;text-align:center;padding:4px 0;color:#a3a3a3;text-transform:uppercase;letter-spacing:0.04em;}
+    .c-cal-day{width:34px;height:34px;border-radius:8px;border:none;background:transparent;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:inherit;color:#404040;transition:background 0.15s,color 0.15s;}
+    .dark .c-cal-day{color:#d4d4d4;}
+    .c-cal-day:hover:not(.empty):not(.disabled){background:#f0f0f0;color:#171717;}
+    .dark .c-cal-day:hover:not(.empty):not(.disabled){background:#2a2a2a;color:#fff;}
+    .c-cal-day.today{font-weight:700;color:#171717;position:relative;}
+    .dark .c-cal-day.today{color:#fff;}
+    .c-cal-day.today::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:currentColor;}
+    .c-cal-day.selected{background:#171717 !important;color:#fff !important;font-weight:600;}
+    .dark .c-cal-day.selected{background:#fff !important;color:#171717 !important;}
+    .c-cal-day.disabled{color:#d4d4d4;cursor:not-allowed;pointer-events:none;}
+    .dark .c-cal-day.disabled{color:#404040;}
+    .c-cal-day.empty{cursor:default;pointer-events:none;}
+    /* Today btn + footer */
+    .c-cal-footer{margin-top:10px;padding-top:10px;border-top:1px solid #f0f0f0;display:flex;gap:6px;}
+    .dark .c-cal-footer{border-color:#2a2a2a;}
+    .c-today-btn{flex:1;padding:7px;font-size:12px;font-weight:500;font-family:inherit;border-radius:9px;border:1.5px solid #e5e5e5;background:transparent;cursor:pointer;color:#404040;transition:all 0.15s;}
+    .c-today-btn:hover{border-color:#171717;background:#171717;color:#fff;}
+    .dark .c-today-btn{border-color:#404040;color:#d4d4d4;}
+    .dark .c-today-btn:hover{border-color:#fff;background:#fff;color:#171717;}
+    .c-clear-btn{padding:7px 12px;font-size:12px;font-family:inherit;border-radius:9px;border:none;background:transparent;cursor:pointer;color:#a3a3a3;transition:color 0.15s;}
+    .c-clear-btn:hover{color:#ef4444;}
+    /* Month picker grid */
+    .c-month-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:4px 0;}
+    .c-month-btn{padding:8px 4px;font-size:12px;font-weight:500;font-family:inherit;border-radius:9px;border:none;background:transparent;cursor:pointer;color:#404040;transition:background 0.15s,color 0.15s;text-align:center;}
+    .dark .c-month-btn{color:#d4d4d4;}
+    .c-month-btn:hover{background:#f0f0f0;color:#171717;}
+    .dark .c-month-btn:hover{background:#2a2a2a;color:#fff;}
+    .c-month-btn.cur-month{background:#171717;color:#fff;font-weight:600;}
+    .dark .c-month-btn.cur-month{background:#fff;color:#171717;}
+    /* Year picker */
+    .c-year-wrap{display:flex;flex-direction:column;gap:8px;padding:4px 0;}
+    .c-year-inp{width:100%;padding:8px 12px;font-size:14px;font-family:inherit;border-radius:10px;border:1.5px solid #e5e5e5;background:#fafafa;text-align:center;font-weight:600;outline:none;transition:border-color 0.2s;}
+    .dark .c-year-inp{border-color:#404040;background:#262626;color:#f5f5f5;}
+    .c-year-inp:focus{border-color:#171717;}
+    .dark .c-year-inp:focus{border-color:#e5e5e5;}
+    .c-year-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;}
+    .c-year-btn{padding:7px 4px;font-size:12px;font-family:inherit;border-radius:8px;border:none;background:transparent;cursor:pointer;color:#404040;transition:background 0.15s,color 0.15s;text-align:center;}
+    .dark .c-year-btn{color:#d4d4d4;}
+    .c-year-btn:hover{background:#f0f0f0;color:#171717;}
+    .dark .c-year-btn:hover{background:#2a2a2a;color:#fff;}
+    .c-year-btn.cur-year{background:#171717;color:#fff;font-weight:600;}
+    .dark .c-year-btn.cur-year{background:#fff;color:#171717;}
+  </style>
+</head>
+<body class="bg-neutral-100 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100 font-poppins">
+
+  <!-- NAVBAR (same pattern) -->
+  <nav class="nav-blur fixed top-0 left-0 right-0 z-50 bg-neutral-100/85 dark:bg-neutral-950/85 border-b border-neutral-200 dark:border-neutral-800">
+    <div class="h-14 md:h-16 flex items-center justify-between px-4 md:px-10">
+      <a href="index.html" class="w-11 h-11"><img src="ams-logo.png" alt="Logo" class="w-full h-full object-contain"/></a>
+      <ul class="hidden md:flex items-center gap-1 list-none m-0 p-0">
+        <li><a href="index.html" class="px-4 py-2 text-sm font-medium rounded-lg text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-white block">Home</a></li>
+        <li class="relative" data-dropdown>
+          <button class="dropdown-trigger flex items-center gap-1 px-4 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800 rounded-lg cursor-pointer border-none bg-transparent font-poppins">My Rooms <i class="uil uil-angle-down text-base dropdown-chevron" style="transition:transform 0.2s;"></i></button>
+          <div class="dropdown-menu absolute top-full left-0 mt-2 w-44 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-xl shadow-xl p-1.5 z-50 opacity-0 invisible pointer-events-none" style="transition:opacity 0.18s ease,transform 0.18s ease;transform:translateY(6px);">
+            <a href="all-rooms.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-apps"></i> All Rooms</a>
+            <a href="booked.html"    class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-calendar-alt"></i> Booked</a>
+            <a href="favorites.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-heart"></i> Favorites</a>
+          </div>
+        </li>
+        <li class="relative" data-dropdown>
+          <button class="dropdown-trigger flex items-center gap-1 px-4 py-2 text-sm font-semibold text-neutral-900 dark:text-white bg-neutral-200 dark:bg-neutral-800 rounded-lg cursor-pointer border-none bg-transparent font-poppins">Account <i class="uil uil-angle-down text-base dropdown-chevron" style="transition:transform 0.2s;"></i></button>
+          <div class="dropdown-menu absolute top-full left-0 mt-2 w-48 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-xl shadow-xl p-1.5 z-50 opacity-0 invisible pointer-events-none" style="transition:opacity 0.18s ease,transform 0.18s ease;transform:translateY(6px);">
+            <a href="billing-history.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-receipt"></i> Billing History</a>
+            <a href="payment.html"         class="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 rounded-lg"><i class="uil uil-credit-card"></i> Payment</a>
+            <a href="complaint.html"       class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-comment-exclamation"></i> Complaint</a>
+          </div>
+        </li>
+      </ul>
+      <div class="flex items-center gap-2">
+        <button id="darkToggle" class="w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-full border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 shadow-sm cursor-pointer"><i id="themeIcon" class="uil uil-sun text-base"></i></button>
+        <div class="relative" id="avatarDropdown">
+          <div id="avatarTrigger" class="w-8 h-8 md:w-9 md:h-9 rounded-full overflow-hidden border-2 border-neutral-200 dark:border-neutral-700 cursor-pointer"><img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&q=80" alt="Avatar" class="w-full h-full object-cover"/></div>
+          <div id="avatarMenu" class="absolute top-full right-0 mt-2 w-44 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-xl shadow-xl p-1.5 z-50 opacity-0 invisible pointer-events-none" style="transition:opacity 0.18s ease,transform 0.18s ease;transform:translateY(6px);">
+            <a href="profile.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-user"></i> Profile</a>
+            <a href="settings.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-setting"></i> Settings</a>
+            <div class="my-1 border-t border-neutral-100 dark:border-neutral-800"></div>
+            <a href="#" class="flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg"><i class="uil uil-sign-out-alt"></i> Logout</a>
+          </div>
+        </div>
+        <button id="menuToggle" class="md:hidden flex items-center justify-center w-8 h-8 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer border-none bg-transparent text-neutral-700 dark:text-neutral-300"><i id="menuIcon" class="uil uil-bars text-xl"></i></button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="md:hidden border-t border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-950">
+      <div class="px-4 py-3 flex flex-col gap-1">
+        <a href="index.html" class="px-4 py-2 text-sm font-medium rounded-lg text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-white block">Home</a>
+        <div><button onclick="toggleMobileSection('myRooms')" class="w-full flex items-center justify-between px-3 py-2.5 text-sm text-neutral-500 rounded-lg cursor-pointer border-none bg-transparent font-poppins text-left hover:bg-neutral-100 dark:hover:bg-neutral-800">My Rooms <i class="uil uil-angle-down text-lg" id="myRoomsIcon"></i></button>
+          <div id="myRooms" class="hidden flex-col pl-3 gap-1">
+            <a href="all-rooms.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 rounded-lg"><i class="uil uil-apps"></i> All Rooms</a>
+            <a href="booked.html"    class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 rounded-lg"><i class="uil uil-calendar-alt"></i> Booked</a>
+            <a href="favorites.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 rounded-lg"><i class="uil uil-heart"></i> Favorites</a>
+          </div>
+        </div>
+        <div><button onclick="toggleMobileSection('accountMenu')" class="w-full flex items-center justify-between px-3 py-2.5 text-sm font-semibold rounded-lg cursor-pointer border-none bg-transparent font-poppins text-left hover:bg-neutral-100 dark:hover:bg-neutral-800">Account <i class="uil uil-angle-down text-lg" id="accountMenuIcon"></i></button>
+          <div id="accountMenu" class="hidden flex-col pl-3 gap-1">
+            <a href="billing-history.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 rounded-lg"><i class="uil uil-receipt"></i> Billing History</a>
+            <a href="payment.html"         class="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-neutral-900 dark:text-white rounded-lg"><i class="uil uil-credit-card"></i> Payment</a>
+            <a href="complaint.html"       class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 rounded-lg"><i class="uil uil-comment-exclamation"></i> Complaint</a>
+          </div>
+        </div>
+        <div class="border-t border-neutral-200 dark:border-neutral-700 mt-1 pt-2">
+          <a href="#" class="flex items-center gap-2 px-3 py-2.5 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800"><i class="uil uil-user"></i> Profile</a>
+          <a href="#" class="flex items-center gap-2 px-3 py-2.5 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800"><i class="uil uil-setting"></i> Settings</a>
+          <a href="#" class="flex items-center gap-2 px-3 py-2.5 text-sm text-red-500 hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40"><i class="uil uil-sign-out-alt"></i> Logout</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-4xl mx-auto px-4 md:px-8 pt-24 pb-16">
+
+    <div class="mb-8 reveal">
+      <p class="text-xs font-medium tracking-widest uppercase text-neutral-400 mb-1">Account</p>
+      <h1 class="text-2xl md:text-3xl font-semibold mb-1">Payment</h1>
+      <p class="text-sm text-neutral-500 dark:text-neutral-400">Pay your rent securely using your preferred method.</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 reveal">
+
+      <!-- Left: payment form -->
+      <div class="lg:col-span-3 space-y-5">
+
+        <!-- Amount due banner -->
+        <div class="bg-neutral-900 dark:bg-white rounded-3xl p-5 flex items-center justify-between">
+          <div>
+            <p class="text-xs text-neutral-400 dark:text-neutral-500 mb-0.5">Amount Due</p>
+            <p class="text-3xl font-semibold text-white dark:text-neutral-900">₱3,500</p>
+            <p class="text-xs text-neutral-400 dark:text-neutral-500 mt-0.5">Sky Terrace · May 2025</p>
+          </div>
+          <div class="w-12 h-12 rounded-2xl bg-white/10 dark:bg-neutral-900/10 flex items-center justify-center">
+            <i class="uil uil-money-bill text-2xl text-white dark:text-neutral-900"></i>
+          </div>
+        </div>
+
+        <!-- Payment method -->
+        <div class="bg-white dark:bg-neutral-900 rounded-3xl border border-neutral-100 dark:border-neutral-800 p-5">
+          <h2 class="text-sm font-semibold mb-4">Payment Method</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+            <div class="method-card selected" onclick="selectMethod(this)">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center shrink-0">
+                  <i class="uil uil-credit-card text-lg text-blue-600 dark:text-blue-400"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium">GCash</p>
+                  <p class="text-xs text-neutral-500 dark:text-neutral-400">+63 912 *** 6789</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="method-card" onclick="selectMethod(this)">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center shrink-0">
+                  <i class="uil uil-wallet text-lg text-purple-600 dark:text-purple-400"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium">Maya</p>
+                  <p class="text-xs text-neutral-500 dark:text-neutral-400">+63 912 *** 6789</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="method-card" onclick="selectMethod(this)">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center shrink-0">
+                  <i class="uil uil-building text-lg text-green-600 dark:text-green-400"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium">Bank Transfer</p>
+                  <p class="text-xs text-neutral-500 dark:text-neutral-400">BDO / BPI / UnionBank</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="method-card" onclick="selectMethod(this)">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
+                  <i class="uil uil-money-bill text-lg text-neutral-600 dark:text-neutral-400"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium">Cash</p>
+                  <p class="text-xs text-neutral-500 dark:text-neutral-400">Pay at the office</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Reference number field (shown for digital methods) -->
+        <div class="bg-white dark:bg-neutral-900 rounded-3xl border border-neutral-100 dark:border-neutral-800 p-5">
+          <h2 class="text-sm font-semibold mb-4">Payment Details</h2>
+          <div class="space-y-4">
+            <div>
+              <label class="text-xs font-medium text-neutral-600 dark:text-neutral-400 block mb-1.5">GCash / Reference Number</label>
+              <input type="text" placeholder="e.g. 1234567890" class="w-full px-3 py-2.5 text-sm rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 focus:outline-none focus:border-neutral-400" />
+            </div>
+            <div>
+              <label class="text-xs font-medium text-neutral-600 dark:text-neutral-400 block mb-1.5">Date of Payment</label>
+              <div class="c-datepicker" id="dp-payment">
+                <div class="c-date-trigger" id="dp-payment-trigger" data-placeholder="Select payment date" onclick="toggleDatepicker('dp-payment')">
+                  <i class="uil uil-calendar-alt"></i>
+                  <span id="dp-payment-label">Select payment date</span>
+                </div>
+                <div class="c-cal" id="dp-payment-cal"></div>
+              </div>
+            </div>
+            <div>
+              <label class="text-xs font-medium text-neutral-600 dark:text-neutral-400 block mb-1.5">Upload Receipt (optional)</label>
+              <div class="border-2 border-dashed border-neutral-200 dark:border-neutral-700 rounded-xl p-6 text-center cursor-pointer hover:border-neutral-400 dark:hover:border-neutral-500">
+                <i class="uil uil-cloud-upload text-2xl text-neutral-400 block mb-1"></i>
+                <p class="text-xs text-neutral-500 dark:text-neutral-400">Click to upload or drag & drop</p>
+                <p class="text-xs text-neutral-400 mt-0.5">PNG, JPG up to 5MB</p>
+              </div>
+            </div>
+            <div>
+              <label class="text-xs font-medium text-neutral-600 dark:text-neutral-400 block mb-1.5">Notes (optional)</label>
+              <textarea rows="2" placeholder="Any notes for the property manager…" class="w-full px-3 py-2.5 text-sm rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 focus:outline-none focus:border-neutral-400 resize-none"></textarea>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right: summary -->
+      <div class="lg:col-span-2">
+        <div class="sticky top-20 bg-white dark:bg-neutral-900 rounded-3xl border border-neutral-100 dark:border-neutral-800 p-5">
+          <h2 class="text-sm font-semibold mb-4">Summary</h2>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between"><span class="text-neutral-500 dark:text-neutral-400">Room</span><span class="font-medium">Sky Terrace</span></div>
+            <div class="flex justify-between"><span class="text-neutral-500 dark:text-neutral-400">Month</span><span class="font-medium">May 2025</span></div>
+            <div class="flex justify-between"><span class="text-neutral-500 dark:text-neutral-400">Due Date</span><span class="font-medium">May 5, 2025</span></div>
+            <div class="flex justify-between"><span class="text-neutral-500 dark:text-neutral-400">Method</span><span class="font-medium" id="selectedMethod">GCash</span></div>
+            <div class="flex justify-between pt-3 border-t border-neutral-100 dark:border-neutral-800 font-semibold">
+              <span>Total</span><span>₱3,500</span>
+            </div>
+          </div>
+          <button onclick="submitPayment()" class="w-full mt-5 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 font-medium text-sm py-3 rounded-2xl hover:opacity-85 cursor-pointer border-none font-poppins">
+            Submit Payment
+          </button>
+          <p class="text-xs text-neutral-400 text-center mt-3">Payment will be reviewed by the manager within 24 hours.</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-sm font-medium px-5 py-3 rounded-2xl shadow-xl z-50 opacity-0 pointer-events-none" style="transition:opacity 0.3s;">
+    <i class="uil uil-check-circle mr-2 text-green-400 dark:text-green-600"></i>Payment submitted successfully!
+  </div>
+
+  <script>
+    const html=document.documentElement,themeIcon=document.getElementById('themeIcon');
+    function applyTheme(d){d?html.classList.add('dark'):html.classList.remove('dark');themeIcon.className=d?'uil uil-moon text-base':'uil uil-sun text-base';}
+    const saved=localStorage.getItem('theme');
+    applyTheme(saved==='dark'||(!saved&&window.matchMedia('(prefers-color-scheme: dark)').matches));
+    document.getElementById('darkToggle').addEventListener('click',()=>{const d=html.classList.contains('dark');localStorage.setItem('theme',d?'light':'dark');applyTheme(!d);});
+    let menuOpen=false;
+    document.getElementById('menuToggle').addEventListener('click',()=>{menuOpen=!menuOpen;document.getElementById('mobileMenu').classList.toggle('open',menuOpen);document.getElementById('menuIcon').className=menuOpen?'uil uil-times text-xl':'uil uil-bars text-xl';});
+    function toggleMobileSection(id){const el=document.getElementById(id),icon=document.getElementById(id+'Icon'),isOpen=!el.classList.contains('hidden');el.classList.toggle('hidden',isOpen);el.classList.toggle('flex',!isOpen);if(icon)icon.className=isOpen?'uil uil-angle-down text-lg':'uil uil-angle-up text-lg';}
+    const avatarTrigger=document.getElementById('avatarTrigger'),avatarMenu=document.getElementById('avatarMenu'),avatarWrapper=document.getElementById('avatarDropdown');
+    let avatarOpen=false;
+    const openAvatar=()=>{avatarOpen=true;avatarMenu.style.cssText='transform:translateY(0);opacity:1;visibility:visible;';avatarMenu.classList.remove('pointer-events-none');};
+    const closeAvatar=()=>{avatarOpen=false;avatarMenu.style.cssText='transform:translateY(6px);opacity:0;visibility:hidden;';avatarMenu.classList.add('pointer-events-none');};
+    avatarTrigger.addEventListener('click',e=>{e.stopPropagation();avatarOpen?closeAvatar():openAvatar();});
+    document.addEventListener('click',e=>{if(!avatarWrapper.contains(e.target))closeAvatar();});
+    document.querySelectorAll('[data-dropdown]').forEach(item=>{const menu=item.querySelector('.dropdown-menu'),chevron=item.querySelector('.dropdown-chevron');let t=null;
+      const open=()=>{clearTimeout(t);menu.style.cssText='transform:translateY(0);opacity:1;visibility:visible;';menu.classList.remove('pointer-events-none');if(chevron)chevron.style.transform='rotate(180deg)';};
+      const close=()=>{t=setTimeout(()=>{menu.style.cssText='transform:translateY(6px);opacity:0;visibility:hidden;';menu.classList.add('pointer-events-none');if(chevron)chevron.style.transform='rotate(0deg)';},120);};
+      item.querySelector('.dropdown-trigger').addEventListener('mouseenter',open);item.querySelector('.dropdown-trigger').addEventListener('mouseleave',close);
+      menu.addEventListener('mouseenter',open);menu.addEventListener('mouseleave',close);
+      item.querySelector('.dropdown-trigger').addEventListener('click',()=>menu.style.visibility==='visible'?close():open());
+      document.addEventListener('click',e=>{if(!item.contains(e.target))close();});
+    });
+    function selectMethod(card){
+      document.querySelectorAll('.method-card').forEach(c=>c.classList.remove('selected'));
+      card.classList.add('selected');
+      document.getElementById('selectedMethod').textContent=card.querySelector('p.font-medium').textContent;
+    }
+    function submitPayment(){
+      const t=document.getElementById('toast');
+      t.style.opacity='1';t.classList.remove('pointer-events-none');
+      setTimeout(()=>{t.style.opacity='0';t.classList.add('pointer-events-none');},3500);
+    }
+    // ── Custom Datepicker ──
+    const dpState = {};
+    const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const DAYS   = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+    function initDatepicker(id, minToday = false) {
+      const now = new Date();
+      dpState[id] = { year: now.getFullYear(), month: now.getMonth(), selected: null, minToday, view: 'day' };
+      renderCal(id);
+    }
+
+    function renderCal(id) {
+      const s   = dpState[id];
+      const cal = document.getElementById(id + '-cal');
+      if (s.view === 'month') { renderMonthPicker(id, cal); return; }
+      if (s.view === 'year')  { renderYearPicker(id, cal); return; }
+
+      const y = s.year, m = s.month;
+      const today    = new Date(); today.setHours(0,0,0,0);
+      const firstDay = new Date(y, m, 1).getDay();
+      const daysInM  = new Date(y, m + 1, 0).getDate();
+
+      let html = `
+        <div class="c-cal-head">
+          <button class="c-cal-nav" onclick="calNav('${id}',-1)"><i class="uil uil-angle-left"></i></button>
+          <div style="display:flex;gap:2px;">
+            <button class="c-cal-hbtn" onclick="dpSetView('${id}','month')">${MONTHS[m]}<i class="uil uil-angle-down"></i></button>
+            <button class="c-cal-hbtn" onclick="dpSetView('${id}','year')">${y}<i class="uil uil-angle-down"></i></button>
+          </div>
+          <button class="c-cal-nav" onclick="calNav('${id}',1)"><i class="uil uil-angle-right"></i></button>
+        </div>
+        <div class="c-cal-grid">`;
+      DAYS.forEach(d => { html += `<div class="c-cal-dow">${d}</div>`; });
+      for (let i = 0; i < firstDay; i++) html += `<div class="c-cal-day empty"></div>`;
+      for (let d = 1; d <= daysInM; d++) {
+        const date = new Date(y, m, d); date.setHours(0,0,0,0);
+        const isToday    = date.getTime() === today.getTime();
+        const isSelected = s.selected && date.getTime() === s.selected.getTime();
+        const isDisabled = s.minToday && date < today;
+        let cls = 'c-cal-day';
+        if (isToday)    cls += ' today';
+        if (isSelected) cls += ' selected';
+        if (isDisabled) cls += ' disabled';
+        html += `<button class="${cls}" onclick="selectDay('${id}',${y},${m},${d})">${d}</button>`;
+      }
+      html += `</div>
+        <div class="c-cal-footer">
+          <button class="c-today-btn" onclick="goToday('${id}')"><i class="uil uil-calendar-alt" style="margin-right:4px;"></i>Today</button>
+          <button class="c-clear-btn" onclick="clearDate('${id}')">Clear</button>
+        </div>`;
+      cal.innerHTML = html;
+    }
+
+    function renderMonthPicker(id, cal) {
+      const s = dpState[id];
+      let html = `
+        <div class="c-cal-head">
+          <button class="c-cal-nav" onclick="calYearNav('${id}',-1)"><i class="uil uil-angle-left"></i></button>
+          <button class="c-cal-hbtn" onclick="dpSetView('${id}','year')">${s.year}<i class="uil uil-angle-down"></i></button>
+          <button class="c-cal-nav" onclick="calYearNav('${id}',1)"><i class="uil uil-angle-right"></i></button>
+        </div>
+        <div class="c-month-grid">`;
+      MONTHS_SHORT.forEach((mn, i) => {
+        const isCur = i === s.month;
+        html += `<button class="c-month-btn${isCur?' cur-month':''}" onclick="selectMonth('${id}',${i})">${mn}</button>`;
+      });
+      html += `</div>
+        <div class="c-cal-footer">
+          <button class="c-today-btn" onclick="goToday('${id}')"><i class="uil uil-calendar-alt" style="margin-right:4px;"></i>Today</button>
+          <button class="c-clear-btn" onclick="clearDate('${id}')">Clear</button>
+        </div>`;
+      cal.innerHTML = html;
+    }
+
+    function renderYearPicker(id, cal) {
+      const s    = dpState[id];
+      const base = Math.floor(s.year / 12) * 12;
+      let html = `
+        <div class="c-cal-head">
+          <button class="c-cal-nav" onclick="calYearPageNav('${id}',-12)"><i class="uil uil-angle-left"></i></button>
+          <span style="font-size:13px;font-weight:600;">${base} – ${base+11}</span>
+          <button class="c-cal-nav" onclick="calYearPageNav('${id}',12)"><i class="uil uil-angle-right"></i></button>
+        </div>
+        <div style="margin-bottom:8px;">
+          <input class="c-year-inp" type="number" value="${s.year}" min="1900" max="2100"
+            oninput="manualYear('${id}',this.value)" onkeydown="if(event.key==='Enter')manualYearConfirm('${id}',this.value)" placeholder="Type year…" />
+        </div>
+        <div class="c-year-grid">`;
+      for (let y = base; y < base + 12; y++) {
+        const isCur = y === s.year;
+        html += `<button class="c-year-btn${isCur?' cur-year':''}" onclick="selectYear('${id}',${y})">${y}</button>`;
+      }
+      html += `</div>
+        <div class="c-cal-footer">
+          <button class="c-today-btn" onclick="goToday('${id}')"><i class="uil uil-calendar-alt" style="margin-right:4px;"></i>Today</button>
+          <button class="c-clear-btn" onclick="clearDate('${id}')">Clear</button>
+        </div>`;
+      cal.innerHTML = html;
+    }
+
+    function dpSetView(id, view) { dpState[id].view = view; renderCal(id); }
+
+    function calNav(id, dir) {
+      const s = dpState[id]; s.month += dir;
+      if (s.month > 11) { s.month = 0; s.year++; }
+      if (s.month < 0)  { s.month = 11; s.year--; }
+      renderCal(id);
+    }
+    function calYearNav(id, dir)     { dpState[id].year += dir; renderCal(id); }
+    function calYearPageNav(id, dir) { dpState[id].year += dir; renderCal(id); }
+
+    function selectMonth(id, m) { dpState[id].month = m; dpState[id].view = 'day'; renderCal(id); }
+    function selectYear(id, y)  { dpState[id].year = y; dpState[id].view = 'day'; renderCal(id); }
+    function manualYear(id, val) {
+      const y = parseInt(val);
+      if (!isNaN(y) && y >= 1900 && y <= 2100) { dpState[id].year = y; renderCal(id); }
+    }
+    function manualYearConfirm(id, val) { selectYear(id, parseInt(val)); }
+
+    function selectDay(id, y, m, d) {
+      const s    = dpState[id];
+      const date = new Date(y, m, d);
+      s.selected = date; s.year = y; s.month = m; s.view = 'day';
+      const label = date.toLocaleDateString('en-PH', { month:'long', day:'numeric', year:'numeric' });
+      document.getElementById(id + '-label').textContent = label;
+      document.getElementById(id + '-trigger').classList.add('has-value');
+      renderCal(id);
+      setTimeout(() => document.getElementById(id).classList.remove('open'), 200);
+    }
+
+    function goToday(id) {
+      const now = new Date();
+      dpState[id].year = now.getFullYear();
+      dpState[id].month = now.getMonth();
+      dpState[id].view = 'day';
+      selectDay(id, now.getFullYear(), now.getMonth(), now.getDate());
+    }
+
+    function clearDate(id) {
+      dpState[id].selected = null;
+      const trigger = document.getElementById(id + '-trigger');
+      document.getElementById(id + '-label').textContent = trigger.dataset.placeholder || 'Select a date';
+      trigger.classList.remove('has-value');
+      renderCal(id);
+    }
+
+    function toggleDatepicker(id) {
+      // Lazy-init in case initDatepicker() hasn't been called yet
+      if (!dpState[id]) initDatepicker(id, false);
+      const el     = document.getElementById(id);
+      const isOpen = el.classList.contains('open');
+      document.querySelectorAll('.c-datepicker.open').forEach(dp => dp.classList.remove('open'));
+      if (!isOpen) { dpState[id].view = 'day'; el.classList.add('open'); }
+    }
+    document.addEventListener('click', e => {
+      // If the clicked element was removed from the DOM (e.g. by renderCal replacing innerHTML),
+      // document.contains returns false — in that case we must NOT close the picker.
+      if (!document.contains(e.target)) return;
+      if (!e.target.closest('.c-datepicker')) {
+        document.querySelectorAll('.c-datepicker.open').forEach(dp => dp.classList.remove('open'));
+      }
+    });
+    const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}}),{threshold:0.08});
+    document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  </script>
+</body>
+</html>

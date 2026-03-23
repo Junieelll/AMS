@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Settings — Apartment</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{poppins:['Poppins','sans-serif']},borderRadius:{'4xl':'2rem','5xl':'3rem'}}}}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css"/>
+  <style>
+    body{font-family:'Poppins',sans-serif;}
+    .nav-blur{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+    #mobileMenu{max-height:0;overflow:hidden;transition:max-height 0.35s ease;}
+    #mobileMenu.open{max-height:600px;}
+    .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+    .reveal.visible{opacity:1;transform:none;}
+    img{transition:none !important;}
+    *,*::before,*::after{transition:background-color 0.25s,border-color 0.25s,color 0.2s,box-shadow 0.2s,opacity 0.2s,transform 0.2s;}
+    #toast{transition:opacity 0.3s;}
+    /* Toggle switch */
+    .toggle-wrap{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid #f0f0f0;}
+    .dark .toggle-wrap{border-color:#262626;}
+    .toggle-wrap:last-child{border-bottom:none;}
+    .toggle-info h3{font-size:13px;font-weight:500;}
+    .toggle-info p{font-size:11px;color:#a3a3a3;margin-top:2px;}
+    .toggle{position:relative;width:42px;height:24px;flex-shrink:0;}
+    .toggle input{opacity:0;width:0;height:0;}
+    .toggle-slider{position:absolute;inset:0;background:#e5e5e5;border-radius:50px;cursor:pointer;transition:background 0.25s;}
+    .dark .toggle-slider{background:#404040;}
+    .toggle input:checked+.toggle-slider{background:#171717;}
+    .dark .toggle input:checked+.toggle-slider{background:#fff;}
+    .toggle-slider::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform 0.25s;}
+    .dark .toggle-slider::after{background:#171717;}
+    .toggle input:checked+.toggle-slider::after{transform:translateX(18px);}
+    /* Field */
+    .field-input{width:100%;padding:10px 14px;font-size:13px;font-family:inherit;border-radius:12px;border:1.5px solid #e5e5e5;background:#fafafa;outline:none;transition:border-color 0.2s;}
+    .dark .field-input{border-color:#404040;background:#262626;color:#f5f5f5;}
+    .field-input:focus{border-color:#171717;}
+    .dark .field-input:focus{border-color:#e5e5e5;}
+    /* Danger zone */
+    .danger-btn{width:100%;padding:11px;font-size:13px;font-weight:500;font-family:inherit;border-radius:12px;border:1.5px solid #fecaca;background:transparent;color:#ef4444;cursor:pointer;text-align:left;display:flex;align-items:center;gap:10px;transition:background 0.15s,border-color 0.15s;}
+    .danger-btn:hover{background:#fef2f2;border-color:#ef4444;}
+    .dark .danger-btn{border-color:#7f1d1d;color:#f87171;}
+    .dark .danger-btn:hover{background:#450a0a;}
+  </style>
+</head>
+<body class="bg-neutral-100 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100 font-poppins">
+
+  <!-- NAVBAR -->
+  <nav class="nav-blur fixed top-0 left-0 right-0 z-50 bg-neutral-100/85 dark:bg-neutral-950/85 border-b border-neutral-200 dark:border-neutral-800">
+    <div class="h-14 md:h-16 flex items-center justify-between px-4 md:px-10">
+      <a href="index.html" class="w-11 h-11"><img src="ams-logo.png" alt="Logo" class="w-full h-full object-contain"/></a>
+      <ul class="hidden md:flex items-center gap-1 list-none m-0 p-0">
+        <li><a href="index.html" class="px-4 py-2 text-sm font-medium rounded-lg text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-white block">Home</a></li>
+        <li class="relative" data-dropdown>
+          <button class="dropdown-trigger flex items-center gap-1 px-4 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800 rounded-lg cursor-pointer border-none bg-transparent font-poppins">My Rooms <i class="uil uil-angle-down text-base dropdown-chevron" style="transition:transform 0.2s;"></i></button>
+          <div class="dropdown-menu absolute top-full left-0 mt-2 w-44 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-xl shadow-xl p-1.5 z-50 opacity-0 invisible pointer-events-none" style="transition:opacity 0.18s ease,transform 0.18s ease;transform:translateY(6px);">
+            <a href="all-rooms.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-apps"></i> All Rooms</a>
+            <a href="booked.html"    class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-calendar-alt"></i> Booked</a>
+            <a href="favorites.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-heart"></i> Favorites</a>
+          </div>
+        </li>
+        <li class="relative" data-dropdown>
+          <button class="dropdown-trigger flex items-center gap-1 px-4 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800 rounded-lg cursor-pointer border-none bg-transparent font-poppins">Account <i class="uil uil-angle-down text-base dropdown-chevron" style="transition:transform 0.2s;"></i></button>
+          <div class="dropdown-menu absolute top-full left-0 mt-2 w-48 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-xl shadow-xl p-1.5 z-50 opacity-0 invisible pointer-events-none" style="transition:opacity 0.18s ease,transform 0.18s ease;transform:translateY(6px);">
+            <a href="billing-history.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-receipt"></i> Billing History</a>
+            <a href="payment.html"         class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-credit-card"></i> Payment</a>
+            <a href="complaint.html"       class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-comment-exclamation"></i> Complaint</a>
+          </div>
+        </li>
+      </ul>
+      <div class="flex items-center gap-2">
+        <button id="darkToggle" class="w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-full border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 shadow-sm cursor-pointer"><i id="themeIcon" class="uil uil-sun text-base"></i></button>
+        <div class="relative" id="avatarDropdown">
+          <div id="avatarTrigger" class="w-8 h-8 md:w-9 md:h-9 rounded-full overflow-hidden border-2 border-neutral-900 dark:border-white cursor-pointer">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&q=80" alt="Avatar" class="w-full h-full object-cover"/>
+          </div>
+          <div id="avatarMenu" class="absolute top-full right-0 mt-2 w-44 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-xl shadow-xl p-1.5 z-50 opacity-0 invisible pointer-events-none" style="transition:opacity 0.18s ease,transform 0.18s ease;transform:translateY(6px);">
+            <a href="profile.html"  class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg"><i class="uil uil-user"></i> Profile</a>
+            <a href="settings.html" class="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 rounded-lg"><i class="uil uil-setting"></i> Settings</a>
+            <div class="my-1 border-t border-neutral-100 dark:border-neutral-800"></div>
+            <a href="index.html" class="flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg"><i class="uil uil-sign-out-alt"></i> Logout</a>
+          </div>
+        </div>
+        <button id="menuToggle" class="md:hidden flex items-center justify-center w-8 h-8 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer border-none bg-transparent text-neutral-700 dark:text-neutral-300"><i id="menuIcon" class="uil uil-bars text-xl"></i></button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="md:hidden border-t border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-950">
+      <div class="px-4 py-3 flex flex-col gap-1">
+        <a href="index.html" class="px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-800">Home</a>
+        <div class="border-t border-neutral-200 dark:border-neutral-700 mt-1 pt-2">
+          <a href="profile.html"  class="flex items-center gap-2 px-3 py-2.5 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-800"><i class="uil uil-user"></i> Profile</a>
+          <a href="settings.html" class="flex items-center gap-2 px-3 py-2.5 text-sm font-semibold text-neutral-900 dark:text-white rounded-lg bg-neutral-200 dark:bg-neutral-800"><i class="uil uil-setting"></i> Settings</a>
+          <a href="index.html"    class="flex items-center gap-2 px-3 py-2.5 text-sm text-red-500 hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40"><i class="uil uil-sign-out-alt"></i> Logout</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-3xl mx-auto px-4 md:px-8 pt-24 pb-16">
+
+    <div class="mb-8 reveal">
+      <p class="text-xs font-medium tracking-widest uppercase text-neutral-400 mb-1">Account</p>
+      <h1 class="text-2xl md:text-3xl font-semibold">Settings</h1>
+    </div>
+
+    <!-- Appearance -->
+    <div class="bg-white dark:bg-neutral-900 rounded-3xl border border-neutral-100 dark:border-neutral-800 p-6 mb-5 reveal">
+      <h2 class="text-sm font-semibold mb-4 flex items-center gap-2"><i class="uil uil-palette text-base text-neutral-400"></i> Appearance</h2>
+      <div class="toggle-wrap">
+        <div class="toggle-info"><h3>Dark Mode</h3><p>Switch between light and dark interface</p></div>
+        <label class="toggle"><input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode(this)"/><span class="toggle-slider"></span></label>
+      </div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="bg-white dark:bg-neutral-900 rounded-3xl border border-neutral-100 dark:border-neutral-800 p-6 mb-5 reveal">
+      <h2 class="text-sm font-semibold mb-4 flex items-center gap-2"><i class="uil uil-bell text-base text-neutral-400"></i> Notifications</h2>
+      <div class="toggle-wrap"><div class="toggle-info"><h3>Rent Due Reminders</h3><p>Get notified 5 days before rent is due</p></div><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+      <div class="toggle-wrap"><div class="toggle-info"><h3>Maintenance Updates</h3><p>Receive status updates on your maintenance requests</p></div><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+      <div class="toggle-wrap"><div class="toggle-info"><h3>Lease Expiry Alerts</h3><p>Alerts 30 days before your lease ends</p></div><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+      <div class="toggle-wrap"><div class="toggle-info"><h3>Announcements</h3><p>Building notices and community announcements</p></div><label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label></div>
+    </div>
+
+    <!-- Security -->
+    <div class="bg-white dark:bg-neutral-900 rounded-3xl border border-neutral-100 dark:border-neutral-800 p-6 mb-5 reveal">
+      <h2 class="text-sm font-semibold mb-5 flex items-center gap-2"><i class="uil uil-lock text-base text-neutral-400"></i> Security</h2>
+      <div class="space-y-4">
+        <div>
+          <label class="text-xs font-semibold uppercase tracking-widest text-neutral-400 block mb-1.5">Current Password</label>
+          <input class="field-input" type="password" placeholder="••••••••"/>
+        </div>
+        <div>
+          <label class="text-xs font-semibold uppercase tracking-widest text-neutral-400 block mb-1.5">New Password</label>
+          <input class="field-input" type="password" placeholder="••••••••"/>
+        </div>
+        <div>
+          <label class="text-xs font-semibold uppercase tracking-widest text-neutral-400 block mb-1.5">Confirm New Password</label>
+          <input class="field-input" type="password" placeholder="••••••••"/>
+        </div>
+        <button onclick="savePassword()" class="text-xs font-medium px-5 py-2.5 rounded-xl bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 hover:opacity-80 cursor-pointer border-none font-poppins">Update Password</button>
+      </div>
+    </div>
+
+    <!-- Privacy -->
+    <div class="bg-white dark:bg-neutral-900 rounded-3xl border border-neutral-100 dark:border-neutral-800 p-6 mb-5 reveal">
+      <h2 class="text-sm font-semibold mb-4 flex items-center gap-2"><i class="uil uil-shield-check text-base text-neutral-400"></i> Privacy</h2>
+      <div class="toggle-wrap"><div class="toggle-info"><h3>Share Profile with Manager</h3><p>Allow property manager to view your profile details</p></div><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+      <div class="toggle-wrap"><div class="toggle-info"><h3>Activity Visibility</h3><p>Allow the system to track activity for better service</p></div><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+    </div>
+
+    <!-- Language -->
+    <div class="bg-white dark:bg-neutral-900 rounded-3xl border border-neutral-100 dark:border-neutral-800 p-6 mb-5 reveal">
+      <h2 class="text-sm font-semibold mb-4 flex items-center gap-2"><i class="uil uil-globe text-base text-neutral-400"></i> Language & Region</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="text-xs font-semibold uppercase tracking-widest text-neutral-400 block mb-1.5">Language</label>
+          <select class="field-input cursor-pointer appearance-none"><option>English (Philippines)</option><option>Filipino</option></select>
+        </div>
+        <div>
+          <label class="text-xs font-semibold uppercase tracking-widest text-neutral-400 block mb-1.5">Timezone</label>
+          <select class="field-input cursor-pointer appearance-none"><option>Asia/Manila (UTC+8)</option></select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Danger zone -->
+    <div class="bg-white dark:bg-neutral-900 rounded-3xl border border-red-100 dark:border-red-950 p-6 reveal">
+      <h2 class="text-sm font-semibold mb-4 flex items-center gap-2 text-red-500"><i class="uil uil-exclamation-triangle text-base"></i> Danger Zone</h2>
+      <div class="space-y-3">
+        <button class="danger-btn" onclick="showToast('Data export request submitted. You will receive an email shortly.')">
+          <i class="uil uil-export text-base"></i>
+          <div><p class="text-sm font-medium">Export My Data</p><p class="text-xs text-neutral-400 mt-0.5">Download all your account data as a ZIP file</p></div>
+        </button>
+        <button class="danger-btn" onclick="confirmDeactivate()">
+          <i class="uil uil-user-times text-base"></i>
+          <div><p class="text-sm font-medium">Deactivate Account</p><p class="text-xs text-neutral-400 mt-0.5">Temporarily disable your account</p></div>
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Deactivate confirm modal -->
+  <div id="deactivateModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+    <div class="bg-white dark:bg-neutral-900 rounded-3xl p-7 max-w-sm w-full shadow-2xl">
+      <h3 class="font-semibold text-base mb-2">Deactivate Account?</h3>
+      <p class="text-xs text-neutral-500 dark:text-neutral-400 mb-5">Your account will be temporarily disabled. You can reactivate it by logging in again. Active lease obligations remain in effect.</p>
+      <div class="flex gap-2">
+        <button onclick="document.getElementById('deactivateModal').classList.add('hidden');document.getElementById('deactivateModal').classList.remove('flex');showToast('Account deactivation request submitted.');" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-medium text-sm py-3 rounded-2xl cursor-pointer border-none font-poppins">Deactivate</button>
+        <button onclick="document.getElementById('deactivateModal').classList.add('hidden');document.getElementById('deactivateModal').classList.remove('flex');" class="flex-1 border border-neutral-200 dark:border-neutral-700 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 font-medium text-sm py-3 rounded-2xl cursor-pointer bg-transparent font-poppins">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-sm font-medium px-5 py-3 rounded-2xl shadow-xl z-50 opacity-0 pointer-events-none whitespace-nowrap" style="transition:opacity 0.3s;">
+    <i class="uil uil-check-circle mr-2 text-green-400 dark:text-green-600"></i><span id="toastMsg">Saved!</span>
+  </div>
+
+  <script>
+    const html=document.documentElement,themeIcon=document.getElementById('themeIcon');
+    function applyTheme(d){d?html.classList.add('dark'):html.classList.remove('dark');themeIcon.className=d?'uil uil-moon text-base':'uil uil-sun text-base';const cb=document.getElementById('darkModeToggle');if(cb)cb.checked=d;}
+    const saved=localStorage.getItem('theme');
+    applyTheme(saved==='dark'||(!saved&&window.matchMedia('(prefers-color-scheme: dark)').matches));
+    document.getElementById('darkToggle').addEventListener('click',()=>{const d=html.classList.contains('dark');localStorage.setItem('theme',d?'light':'dark');applyTheme(!d);});
+    function toggleDarkMode(cb){const d=cb.checked;localStorage.setItem('theme',d?'dark':'light');applyTheme(d);}
+    let menuOpen=false;
+    document.getElementById('menuToggle').addEventListener('click',()=>{menuOpen=!menuOpen;document.getElementById('mobileMenu').classList.toggle('open',menuOpen);document.getElementById('menuIcon').className=menuOpen?'uil uil-times text-xl':'uil uil-bars text-xl';});
+    function toggleMobileSection(id){const el=document.getElementById(id),icon=document.getElementById(id+'Icon'),isOpen=!el.classList.contains('hidden');el.classList.toggle('hidden',isOpen);el.classList.toggle('flex',!isOpen);if(icon)icon.className=isOpen?'uil uil-angle-down text-lg':'uil uil-angle-up text-lg';}
+    const avatarTrigger=document.getElementById('avatarTrigger'),avatarMenu=document.getElementById('avatarMenu'),avatarWrapper=document.getElementById('avatarDropdown');
+    let avatarOpen=false;
+    const openAvatar=()=>{avatarOpen=true;avatarMenu.style.cssText='transform:translateY(0);opacity:1;visibility:visible;';avatarMenu.classList.remove('pointer-events-none');};
+    const closeAvatar=()=>{avatarOpen=false;avatarMenu.style.cssText='transform:translateY(6px);opacity:0;visibility:hidden;';avatarMenu.classList.add('pointer-events-none');};
+    avatarTrigger.addEventListener('click',e=>{e.stopPropagation();avatarOpen?closeAvatar():openAvatar();});
+    document.addEventListener('click',e=>{if(!avatarWrapper.contains(e.target))closeAvatar();});
+    document.querySelectorAll('[data-dropdown]').forEach(item=>{const menu=item.querySelector('.dropdown-menu'),chevron=item.querySelector('.dropdown-chevron');let t=null;
+      const open=()=>{clearTimeout(t);menu.style.cssText='transform:translateY(0);opacity:1;visibility:visible;';menu.classList.remove('pointer-events-none');if(chevron)chevron.style.transform='rotate(180deg)';};
+      const close=()=>{t=setTimeout(()=>{menu.style.cssText='transform:translateY(6px);opacity:0;visibility:hidden;';menu.classList.add('pointer-events-none');if(chevron)chevron.style.transform='rotate(0deg)';},120);};
+      item.querySelector('.dropdown-trigger').addEventListener('mouseenter',open);item.querySelector('.dropdown-trigger').addEventListener('mouseleave',close);
+      menu.addEventListener('mouseenter',open);menu.addEventListener('mouseleave',close);
+      item.querySelector('.dropdown-trigger').addEventListener('click',()=>menu.style.visibility==='visible'?close():open());
+      document.addEventListener('click',e=>{if(!item.contains(e.target))close();});
+    });
+    function showToast(msg){const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;t.style.opacity='1';t.classList.remove('pointer-events-none');clearTimeout(t._t);t._t=setTimeout(()=>{t.style.opacity='0';t.classList.add('pointer-events-none');},3200);}
+    function savePassword(){showToast('Password updated successfully!');}
+    function confirmDeactivate(){const m=document.getElementById('deactivateModal');m.classList.remove('hidden');m.classList.add('flex');}
+    const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}}),{threshold:0.08});
+    document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  </script>
+</body>
+</html>

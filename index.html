@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apartment — Elevate Your Living Experience</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { poppins: ['Poppins', 'sans-serif'] },
+          borderRadius: { '4xl': '2rem', '5xl': '3rem' },
+        }
+      }
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css" />
+
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+
+    /* Carousel — crossfade */
+    .image-carousel { position: relative; width: 100%; height: 210px; border-radius: 18px; overflow: hidden; }
+    .carousel-images { position: relative; width: 100%; height: 100%; }
+    .carousel-images img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.65s ease !important;
+      pointer-events: none;
+    }
+    .carousel-images img.active { opacity: 1; z-index: 1; }
+    .price-label { position: absolute; top: 10px; left: 10px; background: rgba(255,255,255,0.6); backdrop-filter: blur(6px); color: #000; padding: 4px 12px; font-size: 11px; font-weight: 600; border-radius: 50px; z-index: 2; }
+    .carousel-indicators { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; background: rgba(0,0,0,0.5); border-radius: 50px; padding: 3px 6px; z-index: 2; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: #969696; cursor: pointer; flex-shrink: 0; transition: background 0.2s; }
+    .dot.active { background: #fff; }
+
+    /* Accordion */
+    .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; padding: 0 16px; }
+    .accordion-content.open { max-height: 300px; padding: 0 16px 16px; }
+    .acc-icon { transition: transform 0.3s ease; display: inline-block; line-height: 1; }
+    .accordion-header.active .acc-icon { transform: rotate(45deg); }
+
+    /* Scroll reveal */
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* Nav blur */
+    .nav-blur { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+
+    /* Mobile menu slide */
+    #mobileMenu { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+    #mobileMenu.open { max-height: 600px; }
+
+    /* suppress transition on regular images but allow carousel fade */
+    img:not(.carousel-images img) { transition: none !important; }
+    *, *::before, *::after { transition: background-color 0.25s, border-color 0.25s, color 0.2s, box-shadow 0.2s, opacity 0.2s, transform 0.2s; }
+    /* carousel images handle their own fade transition */
+
+    /* Room card responsive: stretch on mobile */
+    .room-card { width: 100%; }
+    @media (min-width: 480px) { .room-card { width: calc(50% - 14px); } }
+    @media (min-width: 900px) { .room-card { width: 228px; } }
+  </style>
+</head>
+
+<body class="bg-neutral-100 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100 font-poppins">
+
+  <!-- ══════════════ NAVBAR ══════════════ -->
+  <nav class="nav-blur fixed top-0 left-0 right-0 z-50 bg-neutral-100/85 dark:bg-neutral-950/85 border-b border-neutral-200 dark:border-neutral-800">
+    <!-- Top bar -->
+    <div class="h-14 md:h-16 flex items-center justify-between px-4 md:px-10">
+
+      <a href="#" class="w-11 h-11 "><img src="ams-logo.png" alt="" srcset=""></a>
+
+      <!-- Desktop nav links -->
+      <ul class="hidden md:flex items-center gap-1 list-none m-0 p-0">
+        <li>
+          <a href="index.html" class="px-3 py-2.5 text-sm font-semibold rounded-lg bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white">Home</a>
+        </li>
+        <li class="relative" data-dropdown>
+          <button class="dropdown-trigger flex items-center gap-1 px-4 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800 rounded-lg cursor-pointer border-none bg-transparent font-poppins">
+            My Rooms <i class="uil uil-angle-down text-base dropdown-chevron" style="transition:transform 0.2s;"></i>
+          </button>
+          <div class="dropdown-menu absolute top-full left-0 mt-2 w-40 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800
+                      rounded-xl shadow-xl p-1.5 z-50 opacity-0 invisible pointer-events-none"
+               style="transition: opacity 0.18s ease, transform 0.18s ease; transform: translateY(6px);">
+            <a href="all-rooms.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg">
+              <i class="uil uil-apps text-base"></i> All Rooms
+            </a>
+            <a href="booked.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg">
+              <i class="uil uil-calendar-alt text-base"></i> Booked
+            </a>
+            <a href="favorites.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg">
+              <i class="uil uil-heart text-base"></i> Favorites
+            </a>
+          </div>
+        </li>
+        <li class="relative" data-dropdown>
+          <button class="dropdown-trigger flex items-center gap-1 px-4 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800 rounded-lg cursor-pointer border-none bg-transparent font-poppins">
+            Account <i class="uil uil-angle-down text-base dropdown-chevron" style="transition:transform 0.2s;"></i>
+          </button>
+          <div class="dropdown-menu absolute top-full left-0 mt-2 w-48 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800
+                      rounded-xl shadow-xl p-1.5 z-50 opacity-0 invisible pointer-events-none"
+               style="transition: opacity 0.18s ease, transform 0.18s ease; transform: translateY(6px);">
+            <a href="billing-history.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg">
+              <i class="uil uil-receipt text-base"></i> Billing History
+            </a>
+            <a href="payment.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg">
+              <i class="uil uil-credit-card text-base"></i> Payment
+            </a>
+            <a href="complaint.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg">
+              <i class="uil uil-comment-exclamation text-base"></i> Complaint
+            </a>
+          </div>
+        </li>
+      </ul>
+
+      <!-- Right side: dark toggle + avatar + hamburger -->
+      <div class="flex items-center gap-2">
+        <button id="darkToggle"
+          class="w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-full
+                 border border-neutral-200 dark:border-neutral-700
+                 bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300
+                 hover:bg-neutral-100 dark:hover:bg-neutral-700 shadow-sm cursor-pointer">
+          <i id="themeIcon" class="uil uil-sun text-base"></i>
+        </button>
+        <!-- Avatar dropdown -->
+        <div class="relative" id="avatarDropdown">
+          <div id="avatarTrigger" class="w-8 h-8 md:w-9 md:h-9 rounded-full overflow-hidden border-2 border-neutral-200 dark:border-neutral-700 cursor-pointer hover:border-neutral-400 dark:hover:border-neutral-500" style="transition:border-color 0.2s;">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&q=80" alt="Avatar" class="w-full h-full object-cover" />
+          </div>
+          <div id="avatarMenu" class="absolute top-full right-0 mt-2 w-44 bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800
+                      rounded-xl shadow-xl p-1.5 z-50 opacity-0 invisible pointer-events-none"
+               style="transition: opacity 0.18s ease, transform 0.18s ease; transform: translateY(6px);">
+            <a href="profile.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg">
+              <i class="uil uil-user text-base"></i> Profile
+            </a>
+            <a href="settings.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg">
+              <i class="uil uil-setting text-base"></i> Settings
+            </a>
+            <div class="my-1 border-t border-neutral-100 dark:border-neutral-800"></div>
+            <a href="#" class="flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg">
+              <i class="uil uil-sign-out-alt text-base"></i> Logout
+            </a>
+          </div>
+        </div>
+        <!-- Hamburger (mobile only) -->
+        <button id="menuToggle"
+          class="md:hidden flex items-center justify-center w-8 h-8 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer border-none bg-transparent text-neutral-700 dark:text-neutral-300">
+          <i id="menuIcon" class="uil uil-bars text-xl"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobileMenu" class="md:hidden border-t border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-950">
+      <div class="px-4 py-3 flex flex-col gap-1">
+        <a href="index.html" class="px-4 py-2 text-sm font-semibold rounded-lg bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white block">Home</a>
+
+        <!-- My Rooms accordion -->
+        <div>
+          <button onclick="toggleMobileSection('myRooms')"
+            class="w-full flex items-center justify-between px-3 py-2.5 text-sm text-neutral-500 dark:text-neutral-400 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer border-none bg-transparent font-poppins text-left">
+            My Rooms <i class="uil uil-angle-down text-lg" id="myRoomsIcon"></i>
+          </button>
+          <div id="myRooms" class="hidden flex-col pl-3 gap-1">
+            <a href="all-rooms.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg">
+              <i class="uil uil-apps text-base"></i> All Rooms
+            </a>
+            <a href="booked.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg">
+              <i class="uil uil-calendar-alt text-base"></i> Booked
+            </a>
+            <a href="favorites.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg">
+              <i class="uil uil-heart text-base"></i> Favorites
+            </a>
+          </div>
+        </div>
+
+        <!-- Account accordion -->
+        <div>
+          <button onclick="toggleMobileSection('accountMenu')"
+            class="w-full flex items-center justify-between px-3 py-2.5 text-sm text-neutral-500 dark:text-neutral-400 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer border-none bg-transparent font-poppins text-left">
+            Account <i class="uil uil-angle-down text-lg" id="accountMenuIcon"></i>
+          </button>
+          <div id="accountMenu" class="hidden flex-col pl-3 gap-1">
+            <a href="billing-history.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg">
+              <i class="uil uil-receipt text-base"></i> Billing History
+            </a>
+            <a href="payment.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg">
+              <i class="uil uil-credit-card text-base"></i> Payment
+            </a>
+            <a href="complaint.html" class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg">
+              <i class="uil uil-comment-exclamation text-base"></i> Complaint
+            </a>
+          </div>
+        </div>
+
+        <!-- Account links -->
+        <div class="border-t border-neutral-200 dark:border-neutral-700 mt-1 pt-2">
+          <a href="#" class="flex items-center gap-2 px-3 py-2.5 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800">
+            <i class="uil uil-user text-base"></i> Profile
+          </a>
+          <a href="#" class="flex items-center gap-2 px-3 py-2.5 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800">
+            <i class="uil uil-setting text-base"></i> Settings
+          </a>
+          <a href="#" class="flex items-center gap-2 px-3 py-2.5 text-sm text-red-500 hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40">
+            <i class="uil uil-sign-out-alt text-base"></i> Logout
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ══════════════ HERO ══════════════ -->
+  <div class="px-4 md:px-8 pt-20 md:pt-20 pb-2">
+    <section class="relative overflow-hidden rounded-3xl md:rounded-5xl" style="height:clamp(240px,55vw,550px);">
+      <img
+        src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1400&q=90"
+        alt="Modern apartment building"
+        class="w-full h-full object-cover block"
+      />
+      <div class="absolute inset-0 flex flex-col justify-end items-start text-white"
+           style="background:rgba(0,0,0,0.28); border-radius:inherit; padding: clamp(20px,5vw,55px) clamp(20px,6vw,65px);">
+        <h1 class="font-semibold leading-tight mb-3 md:mb-5"
+            style="font-size:clamp(1.6rem,5vw,3.4rem); max-width:clamp(220px,55vw,580px);">
+          Elevate Your<br/>Living Experience
+        </h1>
+        <p class="text-xs md:text-sm font-medium leading-relaxed"
+           style="color:rgba(255,255,255,0.85); max-width:clamp(180px,75vw,420px);">
+          Luxurious spaces, refined design, personalized services, and modern amenities for a sophisticated, upscale lifestyle.
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <!-- ══════════════ ROOMS ══════════════ -->
+  <section class="max-w-6xl mx-auto px-4 md:px-8 py-5 md:py-16">
+
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4 md:gap-10 mb-10 md:mb-14 reveal">
+      <h2 class="text-2xl sm:text-3xl md:text-4xl font-semibold leading-snug" style="max-width:400px;">
+        Discover Your Perfect Room Match
+      </h2>
+      <p class="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed md:text-right md:mt-2" style="max-width:400px;">
+        Discover your perfect living space with a curated selection of modern apartments, designed to elevate your lifestyle and offer unparalleled comfort and convenience.
+      </p>
+    </div>
+
+    <!-- Cards grid -->
+    <div class="flex flex-wrap justify-center gap-4 md:gap-7 reveal">
+
+      <!-- Deluxe Studio -->
+      <div class="room-card rounded-3xl overflow-hidden shadow-md bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 hover:-translate-y-1 hover:shadow-xl" style="padding:4px; display:flex; flex-direction:column; align-items:center;">
+        <div class="image-carousel">
+          <div class="carousel-images">
+            <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=500&q=80" alt="Deluxe Studio 1" />
+            <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=500&q=80" alt="Deluxe Studio 2" />
+            <img src="https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=500&q=80" alt="Deluxe Studio 3" />
+          </div>
+          <div class="price-label">₱3,500/Month</div>
+          <div class="carousel-indicators">
+            <span class="dot active"></span><span class="dot"></span><span class="dot"></span>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;width:100%;">
+          <span style="font-size:13px;font-weight:600;">Deluxe Studio</span>
+          <a href="room-details.html?room=deluxe-studio" class="bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 border-none cursor-pointer font-poppins hover:opacity-75" style="font-size:11px;padding:7px 22px;border-radius:15px;text-decoration:none;display:inline-block;">Details</a>
+        </div>
+      </div>
+
+      <!-- Master Suite -->
+      <div class="room-card rounded-3xl overflow-hidden shadow-md bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 hover:-translate-y-1 hover:shadow-xl" style="padding:4px; display:flex; flex-direction:column; align-items:center;">
+        <div class="image-carousel">
+          <div class="carousel-images">
+            <img src="https://images.unsplash.com/photo-1540518614846-7eded433c457?w=500&q=80" alt="Master Suite 1" />
+            <img src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=500&q=80" alt="Master Suite 2" />
+            <img src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=500&q=80" alt="Master Suite 3" />
+          </div>
+          <div class="price-label">₱3,500/Month</div>
+          <div class="carousel-indicators">
+            <span class="dot active"></span><span class="dot"></span><span class="dot"></span>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;width:100%;">
+          <span style="font-size:13px;font-weight:600;">Master Suite</span>
+          <a href="room-details.html?room=master-suite" class="bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 border-none cursor-pointer font-poppins hover:opacity-75" style="font-size:11px;padding:7px 22px;border-radius:15px;text-decoration:none;display:inline-block;">Details</a>
+        </div>
+      </div>
+
+      <!-- Urban Loft -->
+      <div class="room-card rounded-3xl overflow-hidden shadow-md bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 hover:-translate-y-1 hover:shadow-xl" style="padding:4px; display:flex; flex-direction:column; align-items:center;">
+        <div class="image-carousel">
+          <div class="carousel-images">
+            <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&q=80" alt="Urban Loft 1" />
+            <img src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=500&q=80" alt="Urban Loft 2" />
+            <img src="https://images.unsplash.com/photo-1502005097973-6a7082348e28?w=500&q=80" alt="Urban Loft 3" />
+          </div>
+          <div class="price-label">₱3,500/Month</div>
+          <div class="carousel-indicators">
+            <span class="dot active"></span><span class="dot"></span><span class="dot"></span>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;width:100%;">
+          <span style="font-size:13px;font-weight:600;">Urban Loft</span>
+          <a href="room-details.html?room=urban-loft" class="bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 border-none cursor-pointer font-poppins hover:opacity-75" style="font-size:11px;padding:7px 22px;border-radius:15px;text-decoration:none;display:inline-block;">Details</a>
+        </div>
+      </div>
+
+      <!-- Garden View -->
+      <div class="room-card rounded-3xl overflow-hidden shadow-md bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 hover:-translate-y-1 hover:shadow-xl" style="padding:4px; display:flex; flex-direction:column; align-items:center;">
+        <div class="image-carousel">
+          <div class="carousel-images">
+            <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=500&q=80" alt="Garden View 1" />
+            <img src="https://images.unsplash.com/photo-1507652313519-d4e9174996dd?w=500&q=80" alt="Garden View 2" />
+            <img src="https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=500&q=80" alt="Garden View 3" />
+          </div>
+          <div class="price-label">₱3,500/Month</div>
+          <div class="carousel-indicators">
+            <span class="dot active"></span><span class="dot"></span><span class="dot"></span>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;width:100%;">
+          <span style="font-size:13px;font-weight:600;">Garden View</span>
+          <a href="room-details.html?room=garden-view" class="bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 border-none cursor-pointer font-poppins hover:opacity-75" style="font-size:11px;padding:7px 22px;border-radius:15px;text-decoration:none;display:inline-block;">Details</a>
+        </div>
+      </div>
+
+      <!-- Cozy Den -->
+      <div class="room-card rounded-3xl overflow-hidden shadow-md bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 hover:-translate-y-1 hover:shadow-xl" style="padding:4px; display:flex; flex-direction:column; align-items:center;">
+        <div class="image-carousel">
+          <div class="carousel-images">
+            <img src="https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=500&q=80" alt="Cozy Den Kitchen" />
+            <img src="https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=500&q=80" alt="Cozy Den 2" />
+            <img src="https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=500&q=80" alt="Cozy Den 3" />
+          </div>
+          <div class="price-label">₱3,500/Month</div>
+          <div class="carousel-indicators">
+            <span class="dot active"></span><span class="dot"></span><span class="dot"></span>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;width:100%;">
+          <span style="font-size:13px;font-weight:600;">Cozy Den</span>
+          <a href="room-details.html?room=cozy-den" class="bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 border-none cursor-pointer font-poppins hover:opacity-75" style="font-size:11px;padding:7px 22px;border-radius:15px;text-decoration:none;display:inline-block;">Details</a>
+        </div>
+      </div>
+
+      <!-- Sky Terrace -->
+      <div class="room-card rounded-3xl overflow-hidden shadow-md bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 hover:-translate-y-1 hover:shadow-xl" style="padding:4px; display:flex; flex-direction:column; align-items:center;">
+        <div class="image-carousel">
+          <div class="carousel-images">
+            <img src="https://images.unsplash.com/photo-1600210492493-0946911123ea?w=500&q=80" alt="Sky Terrace 1" />
+            <img src="https://images.unsplash.com/photo-1567767292278-a4f21aa2d36e?w=500&q=80" alt="Sky Terrace 2" />
+            <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=500&q=80" alt="Sky Terrace 3" />
+          </div>
+          <div class="price-label">₱3,500/Month</div>
+          <div class="carousel-indicators">
+            <span class="dot active"></span><span class="dot"></span><span class="dot"></span>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;width:100%;">
+          <span style="font-size:13px;font-weight:600;">Sky Terrace</span>
+          <a href="room-details.html?room=sky-terrace" class="bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 border-none cursor-pointer font-poppins hover:opacity-75" style="font-size:11px;padding:7px 22px;border-radius:15px;text-decoration:none;display:inline-block;">Details</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════ FAQ ══════════════ -->
+  <div class="px-4 md:px-8 mb-12 md:mb-20 reveal">
+    <div id="faqBox" class="rounded-4xl md:rounded-5xl px-5 sm:px-10 md:px-16 pt-8 pb-10 md:pb-16" style="background:#f2e3ff;">
+      <p class="text-xs font-medium tracking-widest uppercase mb-5 text-neutral-400">FAQ</p>
+      <div class="flex flex-col md:flex-row md:justify-between gap-8 md:gap-16">
+
+        <!-- Left -->
+        <div class="shrink-0">
+          <h2 class="text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight">
+            Frequently Asked<br/>Questions
+          </h2>
+        </div>
+
+        <!-- Accordion -->
+        <div class="accordion w-full" style="max-width:600px;">
+
+          <div class="">
+            <button class="accordion-header w-full flex justify-between items-center py-4 px-2 text-sm font-semibold text-left bg-transparent border-none cursor-pointer outline-none font-poppins" style="color:inherit;">
+              What types of apartments do you offer?
+              <span class="acc-icon text-2xl font-light ml-3 text-neutral-400 shrink-0"><i class="uil uil-plus"></i></span>
+            </button>
+            <div class="accordion-content">
+              <p class="text-xs leading-relaxed" style="color:#6A6A6A;">We offer a curated selection of studio, one-bedroom, and two-bedroom apartments — all fully furnished with premium amenities suited for a modern lifestyle.</p>
+            </div>
+          </div>
+
+          <div class="">
+            <button class="accordion-header active w-full flex justify-between items-center py-4 px-2 text-sm font-semibold text-left bg-transparent border-none cursor-pointer outline-none font-poppins" style="color:inherit;">
+              Where are your properties located?
+              <span class="acc-icon text-2xl font-light ml-3 text-neutral-400 shrink-0"><i class="uil uil-plus"></i></span>
+            </button>
+            <div class="accordion-content open">
+              <p class="text-xs leading-relaxed" style="color:#6A6A6A;">Find your perfect home at 18 Rosal Street, Barangay Capri, Novaliches, Quezon City. Offering comfortable and modern living spaces in a peaceful neighborhood, just minutes away from key city amenities.</p>
+            </div>
+          </div>
+
+          <div class="">
+            <button class="accordion-header w-full flex justify-between items-center py-4 px-2 text-sm font-semibold text-left bg-transparent border-none cursor-pointer outline-none font-poppins" style="color:inherit;">
+              How can I pay rent?
+              <span class="acc-icon text-2xl font-light ml-3 text-neutral-400 shrink-0"><i class="uil uil-plus"></i></span>
+            </button>
+            <div class="accordion-content">
+              <p class="text-xs leading-relaxed" style="color:#6A6A6A;">Rent can be paid via bank transfer, GCash, Maya, or cash. We also accept post-dated checks for quarterly arrangements.</p>
+            </div>
+          </div>
+
+          <div class="">
+            <button class="accordion-header w-full flex justify-between items-center py-4 px-2 text-sm font-semibold text-left bg-transparent border-none cursor-pointer outline-none font-poppins" style="color:inherit;">
+              How do I report a maintenance issue?
+              <span class="acc-icon text-2xl font-light ml-3 text-neutral-400 shrink-0"><i class="uil uil-plus"></i></span>
+            </button>
+            <div class="accordion-content">
+              <p class="text-xs leading-relaxed" style="color:#6A6A6A;">You can report maintenance concerns through our in-app request form, or by contacting the property manager via the contact details in your lease agreement.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ FOOTER ══════════════ -->
+  <footer class="border-t border-neutral-200 dark:border-neutral-800 reveal">
+    <div class="max-w-6xl mx-auto px-4 md:px-8 py-10 md:py-14 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 md:gap-16">
+
+      <!-- Brand -->
+      <div class="sm:col-span-2 md:col-span-1">
+        <div class="w-12 h-12 "><img src="ams-logo.png" alt="" srcset=""></div>
+        <div class="text-sm font-semibold text-neutral-700 mb-3">Apartment</div>
+        <p class="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed" style="max-width:200px;">Your trusted partner in finding the perfect place to call home.</p>
+        <div class="flex gap-2 mt-5">
+          <a href="#" class="w-8 h-8 rounded-full border border-neutral-200 dark:border-neutral-700 flex items-center justify-center text-neutral-500 dark:text-neutral-400 hover:bg-neutral-900 dark:hover:bg-white hover:text-white dark:hover:text-neutral-900 hover:border-transparent">
+            <i class="uil uil-facebook-f text-sm"></i>
+          </a>
+          <a href="#" class="w-8 h-8 rounded-full border border-neutral-200 dark:border-neutral-700 flex items-center justify-center text-neutral-500 dark:text-neutral-400 hover:bg-neutral-900 dark:hover:bg-white hover:text-white dark:hover:text-neutral-900 hover:border-transparent">
+            <i class="uil uil-instagram text-sm"></i>
+          </a>
+          <a href="#" class="w-8 h-8 rounded-full border border-neutral-200 dark:border-neutral-700 flex items-center justify-center text-neutral-500 dark:text-neutral-400 hover:bg-neutral-900 dark:hover:bg-white hover:text-white dark:hover:text-neutral-900 hover:border-transparent">
+            <i class="uil uil-twitter-alt text-sm"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Company -->
+      <div>
+        <h4 class="text-xs font-semibold tracking-widest uppercase mb-4">Company</h4>
+        <a href="#" class="block text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white mb-3">About Us</a>
+        <a href="#" class="block text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white mb-3">Contact Us</a>
+        <a href="#" class="block text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white">Feedback</a>
+      </div>
+
+      <!-- Security -->
+      <div>
+        <h4 class="text-xs font-semibold tracking-widest uppercase mb-4">Security</h4>
+        <a href="#" class="block text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white mb-3">Privacy Policy</a>
+        <a href="#" class="block text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white mb-3">Terms and Conditions</a>
+        <a href="#" class="block text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white">Rules and Regulations</a>
+      </div>
+    </div>
+
+    <div class="border-t border-neutral-200 dark:border-neutral-800 py-5 text-center px-4">
+      <p class="text-xs text-neutral-400 dark:text-neutral-500">© Copyright 2024. All Rights Reserved by Site Name</p>
+    </div>
+  </footer>
+
+
+  <!-- ══════════════ SCRIPTS ══════════════ -->
+  <script>
+    // ── Dark Mode ──
+    const html = document.documentElement;
+    const darkBtn = document.getElementById('darkToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const faqBox = document.getElementById('faqBox');
+
+    function applyTheme(dark) {
+      if (dark) {
+        html.classList.add('dark');
+        themeIcon.className = 'uil uil-moon text-base';
+        faqBox.style.backgroundColor = '#1c1917';
+      } else {
+        html.classList.remove('dark');
+        themeIcon.className = 'uil uil-sun text-base';
+        faqBox.style.backgroundColor = '#f2e3ff';
+      }
+    }
+
+    const saved = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(saved === 'dark' || (!saved && prefersDark));
+
+    darkBtn.addEventListener('click', () => {
+      const isDark = html.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'light' : 'dark');
+      applyTheme(!isDark);
+    });
+
+    // ── Mobile Menu ──
+    const menuToggle = document.getElementById('menuToggle');
+    const menuIcon = document.getElementById('menuIcon');
+    const mobileMenu = document.getElementById('mobileMenu');
+    let menuOpen = false;
+
+    menuToggle.addEventListener('click', () => {
+      menuOpen = !menuOpen;
+      mobileMenu.classList.toggle('open', menuOpen);
+      menuIcon.className = menuOpen ? 'uil uil-times text-xl' : 'uil uil-bars text-xl';
+    });
+
+    function toggleMobileSection(id) {
+      const el = document.getElementById(id);
+      const icon = document.getElementById(id + 'Icon');
+      const isOpen = !el.classList.contains('hidden');
+      el.classList.toggle('hidden', isOpen);
+      el.classList.toggle('flex', !isOpen);
+      if (icon) icon.className = isOpen ? 'uil uil-angle-down text-lg' : 'uil uil-angle-up text-lg';
+    }
+
+    // ── Avatar Dropdown (click only) ──
+    const avatarTrigger = document.getElementById('avatarTrigger');
+    const avatarMenu    = document.getElementById('avatarMenu');
+    const avatarWrapper = document.getElementById('avatarDropdown');
+    let avatarOpen = false;
+
+    function openAvatar() {
+      avatarOpen = true;
+      avatarMenu.style.transform  = 'translateY(0)';
+      avatarMenu.style.opacity    = '1';
+      avatarMenu.style.visibility = 'visible';
+      avatarMenu.classList.remove('pointer-events-none');
+    }
+
+    function closeAvatar() {
+      avatarOpen = false;
+      avatarMenu.style.transform  = 'translateY(6px)';
+      avatarMenu.style.opacity    = '0';
+      avatarMenu.style.visibility = 'hidden';
+      avatarMenu.classList.add('pointer-events-none');
+    }
+
+    avatarTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      avatarOpen ? closeAvatar() : openAvatar();
+    });
+
+    // Close when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!avatarWrapper.contains(e.target)) closeAvatar();
+    });
+
+    // ── Desktop Dropdowns (JS hover with close delay) ──
+    document.querySelectorAll('[data-dropdown]').forEach(item => {
+      const menu     = item.querySelector('.dropdown-menu');
+      const chevron  = item.querySelector('.dropdown-chevron');
+      let closeTimer = null;
+
+      function openMenu() {
+        clearTimeout(closeTimer);
+        menu.style.transform   = 'translateY(0)';
+        menu.style.opacity     = '1';
+        menu.style.visibility  = 'visible';
+        menu.classList.remove('pointer-events-none');
+        if (chevron) chevron.style.transform = 'rotate(180deg)';
+      }
+
+      function closeMenu() {
+        closeTimer = setTimeout(() => {
+          menu.style.transform   = 'translateY(6px)';
+          menu.style.opacity     = '0';
+          menu.style.visibility  = 'hidden';
+          menu.classList.add('pointer-events-none');
+          if (chevron) chevron.style.transform = 'rotate(0deg)';
+        }, 120); // small delay so mouse can travel into the menu
+      }
+
+      // Hover on the trigger button
+      item.querySelector('.dropdown-trigger').addEventListener('mouseenter', openMenu);
+      item.querySelector('.dropdown-trigger').addEventListener('mouseleave', closeMenu);
+
+      // Hover on the menu itself — cancel the close timer
+      menu.addEventListener('mouseenter', openMenu);
+      menu.addEventListener('mouseleave', closeMenu);
+
+      // Also support click toggle on the trigger
+      item.querySelector('.dropdown-trigger').addEventListener('click', () => {
+        const isOpen = menu.style.visibility === 'visible';
+        isOpen ? closeMenu() : openMenu();
+      });
+
+      // Close when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!item.contains(e.target)) closeMenu();
+      });
+    });
+
+    // ── Carousel (crossfade) ──
+    document.querySelectorAll('.room-card').forEach((card) => {
+      const images = Array.from(card.querySelectorAll('.carousel-images img'));
+      const dots   = Array.from(card.querySelectorAll('.dot'));
+      let current  = 0;
+      let busy     = false;
+
+      // activate first image
+      images[0].classList.add('active');
+
+      function goTo(index) {
+        if (busy || index === current) return;
+        busy = true;
+
+        images[current].classList.remove('active');
+        dots[current].classList.remove('active');
+
+        current = (index + images.length) % images.length;
+
+        images[current].classList.add('active');
+        dots[current].classList.add('active');
+
+        setTimeout(() => { busy = false; }, 680); // slightly longer than CSS transition
+      }
+
+      // auto-advance
+      let timer = setInterval(() => goTo(current + 1), 3000);
+
+      // dot click — reset timer so it doesn't fire right after a manual click
+      dots.forEach((dot, i) => {
+        dot.addEventListener('click', () => {
+          clearInterval(timer);
+          goTo(i);
+          timer = setInterval(() => goTo(current + 1), 3000);
+        });
+      });
+    });
+
+    // ── Accordion ──
+    const accordionHeaders = document.querySelectorAll('.accordion-header');
+
+    const defaultActive = document.querySelector('.accordion-header.active');
+    if (defaultActive) {
+      defaultActive.nextElementSibling.style.maxHeight = defaultActive.nextElementSibling.scrollHeight + 'px';
+    }
+
+    accordionHeaders.forEach(header => {
+      header.addEventListener('click', () => {
+        const currentActive = document.querySelector('.accordion-header.active');
+        if (currentActive && currentActive !== header) {
+          currentActive.classList.remove('active');
+          const prev = currentActive.nextElementSibling;
+          prev.style.maxHeight = 0;
+          prev.classList.remove('open');
+        }
+        header.classList.toggle('active');
+        const content = header.nextElementSibling;
+        if (header.classList.contains('active')) {
+          content.style.maxHeight = content.scrollHeight + 'px';
+          content.classList.add('open');
+        } else {
+          content.style.maxHeight = 0;
+          content.classList.remove('open');
+        }
+      });
+    });
+
+    // ── Scroll Reveal ──
+    const revealObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); }
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+  </script>
+</body>
+</html>
